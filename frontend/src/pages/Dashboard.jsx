@@ -1,7 +1,9 @@
 import StatCard from '../components/StatCard';
 import { Ticket, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const stats = [
     { title: 'Total Tickets', value: '1,284', trend: 'up', trendValue: '12', icon: Ticket },
     { title: 'Avg. Resolution Time', value: '4.2h', trend: 'down', trendValue: '8', icon: Clock },
@@ -20,7 +22,10 @@ export default function Dashboard() {
           <button className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium shadow-sm">
             Export Report
           </button>
-          <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium shadow-sm ring-1 ring-indigo-600 ring-offset-1">
+          <button 
+            onClick={() => navigate('/tickets/new')}
+            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium shadow-sm ring-1 ring-indigo-600 ring-offset-1"
+          >
             New Ticket
           </button>
         </div>

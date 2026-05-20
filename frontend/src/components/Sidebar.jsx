@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { NavLink } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   Ticket, 
@@ -14,12 +15,12 @@ export default function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const navItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', active: true },
-    { icon: Inbox, label: 'Inbox', badge: '12' },
-    { icon: Ticket, label: 'Tickets' },
-    { icon: Users, label: 'Customers' },
-    { icon: BarChart3, label: 'Reports' },
-    { icon: Settings, label: 'Settings' }
+    { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
+    { icon: Inbox, label: 'Inbox', badge: '12', path: '/inbox' },
+    { icon: Ticket, label: 'Tickets', path: '/tickets' },
+    { icon: Users, label: 'Customers', path: '/customers' },
+    { icon: BarChart3, label: 'Reports', path: '/reports' },
+    { icon: Settings, label: 'Settings', path: '/settings' }
   ];
 
   return (
@@ -49,26 +50,30 @@ export default function Sidebar() {
           {navItems.map((item, index) => {
             const Icon = item.icon;
             return (
-              <a
+              <NavLink
                 key={index}
-                href="#"
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors group ${
-                  item.active 
+                to={item.path}
+                className={({ isActive }) => `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors group ${
+                  isActive 
                     ? 'bg-indigo-50 text-indigo-700 font-medium' 
                     : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                 }`}
                 title={isCollapsed ? item.label : undefined}
               >
-                <Icon className={`w-5 h-5 ${item.active ? 'text-indigo-600' : 'text-gray-500 group-hover:text-gray-900'}`} />
-                {!isCollapsed && (
-                  <span className="flex-1">{item.label}</span>
+                {({ isActive }) => (
+                  <>
+                    <Icon className={`w-5 h-5 ${isActive ? 'text-indigo-600' : 'text-gray-500 group-hover:text-gray-900'}`} />
+                    {!isCollapsed && (
+                      <span className="flex-1">{item.label}</span>
+                    )}
+                    {!isCollapsed && item.badge && (
+                      <span className="bg-indigo-100 text-indigo-600 py-0.5 px-2 rounded-full text-xs font-semibold">
+                        {item.badge}
+                      </span>
+                    )}
+                  </>
                 )}
-                {!isCollapsed && item.badge && (
-                  <span className="bg-indigo-100 text-indigo-600 py-0.5 px-2 rounded-full text-xs font-semibold">
-                    {item.badge}
-                  </span>
-                )}
-              </a>
+              </NavLink>
             );
           })}
         </nav>
