@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Search, Bell } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-export default function Navbar() {
+export default function Navbar({ setMobileMenuOpen }) {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [showNotifications, setShowNotifications] = useState(false);
@@ -21,9 +21,17 @@ export default function Navbar() {
     { id: 3, title: 'Ticket #1023 resolved', time: '3 hours ago', unread: false },
   ];
   return (
-    <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 sticky top-0 z-10">
-      <div className="flex-1 max-w-2xl">
-        <form onSubmit={handleSearch} className="relative">
+    <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 md:px-6 sticky top-0 z-10">
+      <div className="flex items-center flex-1 max-w-2xl gap-3">
+        <button
+          onClick={() => setMobileMenuOpen(true)}
+          className="md:hidden p-2 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-lg focus:outline-none"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+        <form onSubmit={handleSearch} className="relative flex-1 hidden sm:block">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
           <input
             type="text"

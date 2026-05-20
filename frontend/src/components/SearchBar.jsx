@@ -4,9 +4,11 @@ import { Search } from 'lucide-react';
 export default function SearchBar({ onSearch, disabled, initialValue = '' }) {
   const [searchTerm, setSearchTerm] = useState(initialValue);
 
-  // Sync internal state if initialValue changes (e.g. from URL)
+  // Sync internal state if initialValue is explicitly cleared
   useEffect(() => {
-    setSearchTerm(initialValue);
+    if (initialValue === '' && searchTerm !== '') {
+      setSearchTerm('');
+    }
   }, [initialValue]);
 
   useEffect(() => {

@@ -111,14 +111,14 @@ export default function Tickets() {
         <div className="flex items-center gap-3">
           <button
             onClick={handleExport}
-            className="inline-flex items-center gap-2 bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-50 transition-colors shadow-sm"
+            className="inline-flex items-center gap-2 bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-50 hover:shadow-md active:scale-95 transition-all duration-200 shadow-sm"
           >
             <Download className="w-4 h-4" />
             Export
           </button>
           <Link
             to="/tickets/new"
-            className="inline-flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-indigo-700 transition-colors focus:ring-4 focus:ring-indigo-100 shadow-sm"
+            className="inline-flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-indigo-700 hover:shadow-md active:scale-95 transition-all duration-200 focus:ring-4 focus:ring-indigo-100 shadow-sm"
           >
             <Plus className="w-5 h-5" />
             New Ticket

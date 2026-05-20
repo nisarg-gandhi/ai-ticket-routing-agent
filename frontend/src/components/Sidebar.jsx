@@ -9,7 +9,7 @@ import {
   BarChart3
 } from 'lucide-react';
 
-export default function Sidebar() {
+export default function Sidebar({ mobileMenuOpen, setMobileMenuOpen }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const navItems = [
@@ -20,29 +20,38 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside 
-      className={`bg-white border-r border-gray-200 transition-all duration-300 flex flex-col h-screen sticky top-0 ${
-        isCollapsed ? 'w-20' : 'w-64'
-      }`}
-    >
-      <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200">
-        {!isCollapsed && (
-          <div className="flex items-center gap-2 font-bold text-lg text-gray-900">
-            <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white">
+    <>
+      {/* Mobile overlay */}
+      {mobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-gray-900/50 z-40 md:hidden"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+      
+      <aside 
+        className={`bg-white border-r border-gray-200 transition-all duration-300 flex flex-col h-screen fixed md:sticky top-0 z-50 ${
+          isCollapsed ? 'md:w-20' : 'md:w-64'
+        } ${mobileMenuOpen ? 'w-64 translate-x-0' : 'w-64 -translate-x-full md:translate-x-0'}`}
+      >
+        <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200">
+          {(!isCollapsed || mobileMenuOpen) && (
+            <div className="flex items-center gap-2 font-bold text-lg text-gray-900">
+              <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white">
+                AI
+              </div>
+              <span>TicketRoute</span>
+            </div>
+          )}
+          {isCollapsed && !mobileMenuOpen && (
+            <div className="w-8 h-8 mx-auto rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold">
               AI
             </div>
-            <span>TicketRoute</span>
-          </div>
-        )}
-        {isCollapsed && (
-          <div className="w-8 h-8 mx-auto rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold">
-            AI
-          </div>
-        )}
+          )}
         
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className={`flex items-center justify-center p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition-colors ${isCollapsed ? 'hidden' : 'block'}`}
+          className={`hidden md:flex items-center justify-center p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition-colors ${isCollapsed ? 'hidden' : 'block'}`}
           title="Collapse sidebar"
         >
           <ChevronLeft className="w-5 h-5" />
@@ -71,15 +80,18 @@ export default function Sidebar() {
                     ? 'bg-indigo-50 text-indigo-700 font-medium' 
                     : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                 }`}
-                title={isCollapsed ? item.label : undefined}
+                title={isCollapsed && !mobileMenuOpen ? item.label : undefined}
+                onClick={() => {
+                  if (mobileMenuOpen) setMobileMenuOpen(false);
+                }}
               >
                 {({ isActive }) => (
                   <>
                     <Icon className={`w-5 h-5 ${isActive ? 'text-indigo-600' : 'text-gray-500 group-hover:text-gray-900'}`} />
-                    {!isCollapsed && (
+                    {(!isCollapsed || mobileMenuOpen) && (
                       <span className="flex-1">{item.label}</span>
                     )}
-                    {!isCollapsed && item.badge && (
+                    {(!isCollapsed || mobileMenuOpen) && item.badge && (
                       <span className="bg-indigo-100 text-indigo-600 py-0.5 px-2 rounded-full text-xs font-semibold">
                         {item.badge}
                       </span>
@@ -93,5 +105,6 @@ export default function Sidebar() {
       </div>
 
     </aside>
+    </>
   );
 }

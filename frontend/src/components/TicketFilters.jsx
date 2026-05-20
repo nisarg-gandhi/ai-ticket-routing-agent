@@ -38,10 +38,10 @@ export default function TicketFilters({ filters, onFilterChange, disabled, onCle
           className="flex-1 sm:flex-none px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-white min-w-[120px]"
         >
           <option value="">All Urgencies</option>
-          <option value="low">Low</option>
-          <option value="medium">Medium</option>
-          <option value="high">High</option>
-          <option value="critical">Critical</option>
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
+          <option value="Critical">Critical</option>
         </select>
 
         <select
@@ -52,10 +52,13 @@ export default function TicketFilters({ filters, onFilterChange, disabled, onCle
           className="flex-1 sm:flex-none px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none bg-white min-w-[120px]"
         >
           <option value="">All Categories</option>
-          <option value="Technical Support">Technical</option>
           <option value="Billing">Billing</option>
-          <option value="Sales">Sales</option>
-          <option value="General">General</option>
+          <option value="Bug Report">Bug Report</option>
+          <option value="Feature Request">Feature Request</option>
+          <option value="Technical Support">Technical Support</option>
+          <option value="Refund Request">Refund Request</option>
+          <option value="Account Access">Account Access</option>
+          <option value="General Inquiry">General Inquiry</option>
         </select>
 
         {hasActiveFilters && (

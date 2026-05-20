@@ -40,7 +40,7 @@ export default function Dashboard() {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Overview</h1>
           <p className="text-gray-500 text-sm mt-1">Track your AI support agent's performance</p>
@@ -48,13 +48,13 @@ export default function Dashboard() {
         <div className="flex gap-3">
           <button 
             onClick={() => navigate('/reports')}
-            className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium shadow-sm"
+            className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 hover:shadow-md active:scale-95 transition-all duration-200 text-sm font-medium shadow-sm"
           >
             Export Report
           </button>
           <button 
             onClick={() => navigate('/tickets/new')}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium shadow-sm ring-1 ring-indigo-600 ring-offset-1"
+            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 hover:shadow-md active:scale-95 transition-all duration-200 text-sm font-medium shadow-sm ring-1 ring-indigo-600 ring-offset-1"
           >
             New Ticket
           </button>

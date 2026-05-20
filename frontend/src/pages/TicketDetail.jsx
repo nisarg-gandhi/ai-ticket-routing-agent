@@ -101,7 +101,7 @@ export default function TicketDetail() {
       )}
 
       {/* Header Actions */}
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <button 
           onClick={() => navigate('/tickets')}
           className="flex items-center text-sm text-gray-500 hover:text-gray-900 transition-colors"
@@ -121,11 +121,11 @@ export default function TicketDetail() {
           {/* Ticket Header & Message */}
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
             <div className="p-6 border-b border-gray-100">
-              <div className="flex justify-between items-start mb-4">
+              <div className="flex justify-between items-start mb-4 gap-4 flex-col sm:flex-row">
                 <h1 className="text-2xl font-bold text-gray-900">{ticket.subject}</h1>
                 <Badge label={ticket.status} variant={getStatusVariant(ticket.status)} />
               </div>
-              <div className="flex items-center space-x-4 text-sm text-gray-500">
+              <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
                 <div className="flex items-center">
                   <User className="w-4 h-4 mr-1.5" />
                   <span className="font-medium text-gray-900 mr-1">{ticket.customer_name}</span>
