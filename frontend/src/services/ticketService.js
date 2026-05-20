@@ -1,3 +1,4 @@
+import { fetchWithAuth } from '../utils/fetchWithAuth';
 const API_BASE_URL = 'http://localhost:8000';
 
 /**
@@ -11,7 +12,7 @@ const ticketService = {
    */
   async createTicket(ticketData) {
     try {
-      const response = await fetch(`${API_BASE_URL}/tickets/`, {
+      const response = await fetchWithAuth(`${API_BASE_URL}/tickets/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -42,7 +43,7 @@ const ticketService = {
    */
   async getTicket(id) {
     try {
-      const response = await fetch(`${API_BASE_URL}/tickets/${id}`);
+      const response = await fetchWithAuth(`${API_BASE_URL}/tickets/${id}`);
       if (!response.ok) {
         throw new Error('Failed to fetch ticket');
       }
@@ -64,7 +65,7 @@ const ticketService = {
    */
   async updateTicketStatus(id, status) {
     try {
-      const response = await fetch(`${API_BASE_URL}/tickets/${id}/status`, {
+      const response = await fetchWithAuth(`${API_BASE_URL}/tickets/${id}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -101,7 +102,7 @@ const ticketService = {
       const queryString = queryParams.toString();
       const url = `${API_BASE_URL}/tickets/${queryString ? `?${queryString}` : ''}`;
       
-      const response = await fetch(url);
+      const response = await fetchWithAuth(url);
       if (!response.ok) {
         throw new Error('Failed to fetch tickets');
       }

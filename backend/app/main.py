@@ -1,7 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from .database import engine, Base
-from .routers import tickets, analytics, customers
+from .routers import tickets, analytics, customers, auth
+from .dependencies import get_current_user
 
 # Create the database tables
 Base.metadata.create_all(bind=engine)
@@ -22,9 +23,10 @@ app.add_middleware(
 )
 
 # Include the routers
-app.include_router(tickets.router)
-app.include_router(analytics.router)
-app.include_router(customers.router)
+app.include_router(tickets.router, dependencies=[Depends(get_current_user)])
+app.include_router(analytics.router, dependencies=[Depends(get_current_user)])
+app.include_router(customers.router, dependencies=[Depends(get_current_user)])
+app.include_router(auth.router)
 
 @app.get("/")
 def read_root():

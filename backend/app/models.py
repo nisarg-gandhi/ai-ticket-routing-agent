@@ -16,3 +16,12 @@ class Ticket(Base):
     sentiment = Column(String(50), nullable=True)
     ai_draft_response = Column(Text, nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100))
+    email = Column(String(100), unique=True, index=True)
+    hashed_password = Column(String(200))
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))

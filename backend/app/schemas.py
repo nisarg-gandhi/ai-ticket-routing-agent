@@ -38,3 +38,29 @@ class Ticket(BaseModel):
 
     class Config:
         from_attributes = True  # Allows Pydantic to read data from SQLAlchemy ORM models
+
+# Auth Schemas
+class UserCreate(BaseModel):
+    name: str
+    email: EmailStr
+    password: str
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+class User(BaseModel):
+    id: int
+    name: str
+    email: EmailStr
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    email: Optional[str] = None

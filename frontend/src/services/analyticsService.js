@@ -1,9 +1,10 @@
+import { fetchWithAuth } from '../utils/fetchWithAuth';
 const API_BASE_URL = 'http://localhost:8000';
 
 export const analyticsService = {
   getOverview: async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/analytics/overview`);
+      const response = await fetchWithAuth(`${API_BASE_URL}/analytics/overview`);
       if (!response.ok) {
         throw new Error('Failed to fetch analytics overview');
       }
@@ -16,7 +17,7 @@ export const analyticsService = {
 
   getCharts: async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/analytics/charts`);
+      const response = await fetchWithAuth(`${API_BASE_URL}/analytics/charts`);
       if (!response.ok) {
         throw new Error('Failed to fetch analytics charts');
       }

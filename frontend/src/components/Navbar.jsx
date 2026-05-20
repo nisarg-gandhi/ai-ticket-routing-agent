@@ -1,11 +1,14 @@
 import { useState } from 'react';
-import { Search, Bell } from 'lucide-react';
+import { Search, Bell, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Navbar({ setMobileMenuOpen }) {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -76,15 +79,36 @@ export default function Navbar({ setMobileMenuOpen }) {
         
         <div className="h-8 w-px bg-gray-200 mx-2"></div>
         
-        <button className="flex items-center gap-3 hover:opacity-80 transition-opacity focus:outline-none">
-          <div className="text-right hidden sm:block">
-            <p className="text-sm font-medium text-gray-900 leading-none">Jane Doe</p>
-            <p className="text-xs text-gray-500 mt-1">Admin</p>
-          </div>
-          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 text-white flex items-center justify-center font-semibold text-sm shadow-sm ring-2 ring-white">
-            JD
-          </div>
-        </button>
+        <div className="relative">
+          <button 
+            onClick={() => setShowDropdown(!showDropdown)}
+            className="flex items-center gap-3 hover:opacity-80 transition-opacity focus:outline-none"
+          >
+            <div className="text-right hidden sm:block">
+              <p className="text-sm font-medium text-gray-900 leading-none">{user?.name || 'User'}</p>
+              <p className="text-xs text-gray-500 mt-1">{user?.email}</p>
+            </div>
+            <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 text-white flex items-center justify-center font-semibold text-sm shadow-sm ring-2 ring-white uppercase">
+              {user?.name ? user.name.charAt(0) : 'U'}
+            </div>
+          </button>
+          
+          {showDropdown && (
+            <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-xl shadow-lg z-50 py-1">
+              <button
+                onClick={() => {
+                  setShowDropdown(false);
+                  logout();
+                  navigate('/login');
+                }}
+                className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+              >
+                <LogOut className="w-4 h-4" />
+                Sign out
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );
