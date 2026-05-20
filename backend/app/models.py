@@ -11,4 +11,7 @@ class Ticket(Base):
     subject = Column(String(200))
     message = Column(Text)
     status = Column(String(50), default="open") # e.g., open, in_progress, resolved
+    category = Column(String(50), nullable=True)
+    urgency = Column(String(50), nullable=True)
+    sentiment = Column(String(50), nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))

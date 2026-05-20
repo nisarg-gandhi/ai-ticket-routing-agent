@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
+from typing import Optional
 
 # Schema for creating a ticket (what we expect from the client)
 class TicketCreate(BaseModel):
@@ -16,6 +17,9 @@ class Ticket(BaseModel):
     subject: str
     message: str
     status: str
+    category: Optional[str] = None
+    urgency: Optional[str] = None
+    sentiment: Optional[str] = None
     created_at: datetime
 
     class Config:
