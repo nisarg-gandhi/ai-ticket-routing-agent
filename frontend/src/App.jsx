@@ -3,6 +3,7 @@ import DashboardLayout from './layouts/DashboardLayout';
 import Dashboard from './pages/Dashboard';
 import NewTicket from './pages/NewTicket';
 import Tickets from './pages/Tickets';
+import TicketDetail from './pages/TicketDetail';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/tickets" element={<Tickets />} />
           <Route path="/tickets/new" element={<NewTicket />} />
+          <Route path="/tickets/:id" element={<TicketDetail />} />
           {/* Default fallback */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>

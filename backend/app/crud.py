@@ -5,6 +5,10 @@ from . import models, schemas, ai_service
 def get_tickets(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Ticket).offset(skip).limit(limit).all()
 
+# Function to get a single ticket by ID
+def get_ticket(db: Session, ticket_id: int):
+    return db.query(models.Ticket).filter(models.Ticket.id == ticket_id).first()
+
 # Function to create a new ticket
 def create_ticket(db: Session, ticket: schemas.TicketCreate):
     # Step 1: Call the AI service to classify the ticket based on subject and message

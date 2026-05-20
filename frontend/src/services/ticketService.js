@@ -36,6 +36,27 @@ const ticketService = {
   },
 
   /**
+   * Fetch a single ticket by ID
+   * @param {number|string} id - Ticket ID
+   * @returns {Promise<Object>} The ticket
+   */
+  async getTicket(id) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/tickets/${id}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch ticket');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error(`Error fetching ticket ${id}:`, error);
+      if (error.name === 'TypeError' && error.message === 'Failed to fetch') {
+        throw new Error('Unable to connect to server. Please ensure the backend is running.');
+      }
+      throw error;
+    }
+  },
+
+  /**
    * Fetch all tickets
    * @returns {Promise<Array>} List of tickets
    */

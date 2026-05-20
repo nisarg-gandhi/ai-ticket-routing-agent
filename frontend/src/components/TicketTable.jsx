@@ -1,4 +1,5 @@
 import { AlertCircle, Clock, RefreshCcw } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import Badge from './Badge';
 
 const StatusBadge = ({ status }) => {
@@ -23,6 +24,8 @@ const StatusBadge = ({ status }) => {
 };
 
 export default function TicketTable({ tickets, isLoading, error }) {
+  const navigate = useNavigate();
+
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-16 bg-white rounded-xl border border-gray-200 shadow-sm">
@@ -71,7 +74,11 @@ export default function TicketTable({ tickets, isLoading, error }) {
           </thead>
           <tbody className="divide-y divide-gray-100">
             {tickets.map((ticket) => (
-              <tr key={ticket.id} className="hover:bg-gray-50 transition-colors group cursor-pointer">
+              <tr 
+                key={ticket.id} 
+                onClick={() => navigate(`/tickets/${ticket.id}`)}
+                className="hover:bg-gray-50 transition-colors group cursor-pointer"
+              >
                 <td className="px-6 py-4">
                   <div className="font-medium text-gray-900 group-hover:text-indigo-600 transition-colors">
                     {ticket.customer_name}

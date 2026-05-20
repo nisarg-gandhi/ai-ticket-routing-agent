@@ -7,8 +7,6 @@ frontend/.vite
 # Backend
 # =========================
 backend/venv
-backend/__pycache__
-backend/*.pyc
 backend/tickets.db
 # =========================
 # Environment Variables
@@ -16,7 +14,8 @@ backend/tickets.db
 .env
 frontend/.env
 backend/.env
-
+__pycache__/
+*.pyc
 # =========================
 # OS Files
 # =========================
