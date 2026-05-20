@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import ticketService from '../services/ticketService';
@@ -35,22 +35,39 @@ export default function Tickets() {
     fetchTickets();
   }, [filters]);
 
-  const handleSearch = (searchTerm) => {
-    setFilters(prev => ({ ...prev, search: searchTerm }));
-  };
+  const handleSearch = useCallback((searchTerm) => {
+    setFilters(prev => {
+      if (prev.search === searchTerm) return prev;
+      return { ...prev, search: searchTerm };
+    });
+  }, []);
 
-  const handleFilterChange = (newFilters) => {
-    setFilters(newFilters);
-  };
+  const handleFilterChange = useCallback((newFilters) => {
+    setFilters(prev => {
+      // Prevent object reference change if values are identical
+      if (
+        prev.status === newFilters.status &&
+        prev.category === newFilters.category &&
+        prev.urgency === newFilters.urgency &&
+        prev.search === newFilters.search
+      ) {
+        return prev;
+      }
+      return newFilters;
+    });
+  }, []);
 
-  const handleClearFilters = () => {
-    setFilters(prev => ({
-      ...prev,
-      status: '',
-      category: '',
-      urgency: ''
-    }));
-  };
+  const handleClearFilters = useCallback(() => {
+    setFilters(prev => {
+      if (!prev.status && !prev.category && !prev.urgency) return prev;
+      return {
+        ...prev,
+        status: '',
+        category: '',
+        urgency: ''
+      };
+    });
+  }, []);
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
