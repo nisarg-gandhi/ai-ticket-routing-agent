@@ -29,13 +29,11 @@ def classify_ticket(subject: str, message: str) -> dict:
     # Prompt Engineering Strategy:
     # 1. System Role: Set a clear persona for the AI (expert customer support AI).
     # 2. Strict Constraints: Explicitly list the allowed categories, urgencies, and sentiments.
-    # 3. Output Format: Demand a strict JSON response. Groq supports JSON mode for structured data.
+    # 3. Few-Shot Prompting: Providing concrete examples vastly improves the model's reliability in categorizing edge cases (like mapping "money back" to Refund Request instead of Billing) and strictly reinforces the expected JSON output format.
+    # 4. Output Format: Demand a strict JSON response. Groq supports JSON mode for structured data.
     prompt = f"""
 You are an expert customer support AI. Your task is to classify a support ticket.
 Please analyze the following ticket subject and message, and categorize it based strictly on the criteria below.
-
-Ticket Subject: "{subject}"
-Ticket Message: "{message}"
 
 Categories:
 - Billing
@@ -57,12 +55,27 @@ Sentiment:
 - Neutral
 - Negative
 
-Return ONLY a valid JSON object with exactly the following structure:
-{{
-    "category": "one of the categories",
-    "urgency": "one of the urgencies",
-    "sentiment": "one of the sentiments"
-}}
+EXAMPLES:
+Subject: "I want my money back for the last charge"
+Message: "You charged me twice and I demand a return of the funds immediately!"
+Output: {{"category": "Refund Request", "urgency": "High", "sentiment": "Negative"}}
+
+Subject: "Invoice for last month"
+Message: "Where can I find the invoice for my subscription last month?"
+Output: {{"category": "Billing", "urgency": "Low", "sentiment": "Neutral"}}
+
+Subject: "App crashes on login"
+Message: "Every time I tap the login button, the app completely freezes and then crashes."
+Output: {{"category": "Bug Report", "urgency": "Critical", "sentiment": "Negative"}}
+
+Subject: "Dark mode"
+Message: "It would be really great if you could add a dark mode to the dashboard."
+Output: {{"category": "Feature Request", "urgency": "Low", "sentiment": "Positive"}}
+
+Now, please classify the following ticket. Ensure any language requesting money back or a return of funds is mapped to "Refund Request". Return ONLY a valid JSON object with the exact same structure as the examples.
+
+Ticket Subject: "{subject}"
+Ticket Message: "{message}"
 """
     
     try:
