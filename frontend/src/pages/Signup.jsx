@@ -30,12 +30,12 @@ const Signup = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 sm:p-10 rounded-2xl shadow-xl border border-slate-100">
+      <div className="max-w-md w-full space-y-8 bg-white p-8 sm:p-10 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200">
         <div className="text-center">
-          <div className="mx-auto h-12 w-12 bg-indigo-100 rounded-xl flex items-center justify-center">
+          <div className="mx-auto h-12 w-12 bg-indigo-50 border border-indigo-100 rounded-xl flex items-center justify-center">
             <UserPlus className="h-6 w-6 text-indigo-600" />
           </div>
-          <h2 className="mt-6 text-3xl font-extrabold text-slate-900 tracking-tight">
+          <h2 className="mt-6 text-2xl font-semibold text-slate-900 tracking-tight">
             Create an account
           </h2>
           <p className="mt-2 text-sm text-slate-500">
@@ -65,7 +65,7 @@ const Signup = () => {
                   name="name"
                   type="text"
                   required
-                  className="block w-full pl-10 pr-3 py-2.5 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-colors sm:text-sm"
+                  className="block w-full pl-10 pr-3 py-2.5 border border-slate-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-colors sm:text-sm shadow-sm"
                   placeholder="John Doe"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -86,7 +86,7 @@ const Signup = () => {
                   name="email"
                   type="email"
                   required
-                  className="block w-full pl-10 pr-3 py-2.5 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-colors sm:text-sm"
+                  className="block w-full pl-10 pr-3 py-2.5 border border-slate-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-colors sm:text-sm shadow-sm"
                   placeholder="you@company.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -108,7 +108,7 @@ const Signup = () => {
                   type="password"
                   required
                   minLength={6}
-                  className="block w-full pl-10 pr-3 py-2.5 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-colors sm:text-sm"
+                  className="block w-full pl-10 pr-3 py-2.5 border border-slate-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-colors sm:text-sm shadow-sm"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -121,7 +121,7 @@ const Signup = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="group relative w-full flex justify-center py-2.5 px-4 border border-transparent text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+              className="group relative w-full flex justify-center py-2.5 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all disabled:opacity-70 disabled:cursor-not-allowed shadow-sm"
             >
               {isLoading ? (
                 <div className="flex items-center gap-2">

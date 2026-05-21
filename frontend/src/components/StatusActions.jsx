@@ -12,14 +12,14 @@ export default function StatusActions({ currentStatus, isUpdating, onUpdateStatu
         disabled={isResolved || isInProgress || isUpdating}
         className={`flex items-center px-4 py-2 bg-white border rounded-lg text-sm font-medium transition-all duration-200 shadow-sm ${
           isResolved || isInProgress 
-            ? 'border-gray-200 text-gray-400 cursor-not-allowed bg-gray-50 opacity-70'
-            : 'border-gray-300 text-gray-700 hover:bg-gray-50 hover:shadow-md hover:border-gray-400'
+            ? 'border-slate-200 text-slate-400 cursor-not-allowed bg-slate-50 opacity-70'
+            : 'border-slate-200 text-slate-700 hover:bg-slate-50 hover:shadow-sm hover:border-slate-300'
         }`}
       >
         {isUpdating === 'in_progress' ? (
-          <RefreshCcw className="w-4 h-4 mr-2 animate-spin text-gray-400" />
+          <RefreshCcw className="w-4 h-4 mr-2 animate-spin text-slate-400" />
         ) : (
-          <Clock className={`w-4 h-4 mr-2 transition-colors ${isResolved || isInProgress ? 'text-gray-400' : 'text-yellow-500'}`} />
+          <Clock className={`w-4 h-4 mr-2 transition-colors ${isResolved || isInProgress ? 'text-slate-400' : 'text-amber-500'}`} />
         )}
         {isInProgress ? 'In Progress' : 'Mark In Progress'}
       </button>
@@ -30,14 +30,14 @@ export default function StatusActions({ currentStatus, isUpdating, onUpdateStatu
         disabled={isResolved || isUpdating}
         className={`flex items-center px-4 py-2 bg-white border rounded-lg text-sm font-medium transition-all duration-200 shadow-sm ${
           isResolved 
-            ? 'border-gray-200 text-gray-400 cursor-not-allowed bg-gray-50 opacity-70'
-            : 'border-green-300 text-green-700 hover:bg-green-50 hover:shadow-md hover:border-green-400'
+            ? 'border-slate-200 text-slate-400 cursor-not-allowed bg-slate-50 opacity-70'
+            : 'border-emerald-200 text-emerald-700 hover:bg-emerald-50 hover:shadow-sm hover:border-emerald-300'
         }`}
       >
         {isUpdating === 'resolved' ? (
-          <RefreshCcw className="w-4 h-4 mr-2 animate-spin text-gray-400" />
+          <RefreshCcw className="w-4 h-4 mr-2 animate-spin text-slate-400" />
         ) : (
-          <CheckCircle className={`w-4 h-4 mr-2 transition-colors ${isResolved ? 'text-gray-400' : 'text-green-500'}`} />
+          <CheckCircle className={`w-4 h-4 mr-2 transition-colors ${isResolved ? 'text-slate-400' : 'text-emerald-500'}`} />
         )}
         {isResolved ? 'Resolved' : 'Mark Resolved'}
       </button>

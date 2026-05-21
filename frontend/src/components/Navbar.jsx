@@ -24,24 +24,24 @@ export default function Navbar({ setMobileMenuOpen }) {
     { id: 3, title: 'Ticket #1023 resolved', time: '3 hours ago', unread: false },
   ];
   return (
-    <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 md:px-6 sticky top-0 z-10">
+    <header className="h-16 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-4 md:px-6 sticky top-0 z-10">
       <div className="flex items-center flex-1 max-w-2xl gap-3">
         <button
           onClick={() => setMobileMenuOpen(true)}
-          className="md:hidden p-2 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-lg focus:outline-none"
+          className="md:hidden p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg focus:outline-none"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
         <form onSubmit={handleSearch} className="relative flex-1 hidden sm:block">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search tickets, customers, or articles..."
-            className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-transparent rounded-lg focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all outline-none text-sm text-gray-900 placeholder-gray-500"
+            className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all outline-none text-sm text-slate-900 placeholder-slate-500 shadow-sm"
           />
         </form>
       </div>
@@ -50,34 +50,34 @@ export default function Navbar({ setMobileMenuOpen }) {
         <div className="relative">
           <button 
             onClick={() => setShowNotifications(!showNotifications)}
-            className="relative p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-full hover:bg-gray-100 focus:outline-none"
+            className="relative p-2 text-slate-400 hover:text-slate-600 transition-colors rounded-full hover:bg-slate-100 focus:outline-none"
           >
             <Bell className="w-5 h-5" />
             <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
           </button>
           
           {showNotifications && (
-            <div className="absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-xl shadow-lg z-50 py-2">
-              <div className="px-4 py-2 border-b border-gray-100 flex justify-between items-center">
-                <h3 className="text-sm font-semibold text-gray-900">Notifications</h3>
+            <div className="absolute right-0 mt-2 w-80 bg-white border border-slate-200 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] z-50 py-2">
+              <div className="px-4 py-2 border-b border-slate-100 flex justify-between items-center">
+                <h3 className="text-sm font-semibold text-slate-900">Notifications</h3>
                 <span className="text-xs text-indigo-600 cursor-pointer hover:underline">Mark all as read</span>
               </div>
               <div className="max-h-96 overflow-y-auto">
                 {mockNotifications.map((notif) => (
-                  <div key={notif.id} className={`px-4 py-3 hover:bg-gray-50 cursor-pointer ${notif.unread ? 'bg-indigo-50/30' : ''}`}>
-                    <p className={`text-sm ${notif.unread ? 'font-medium text-gray-900' : 'text-gray-700'}`}>{notif.title}</p>
-                    <p className="text-xs text-gray-500 mt-1">{notif.time}</p>
+                  <div key={notif.id} className={`px-4 py-3 hover:bg-slate-50 cursor-pointer ${notif.unread ? 'bg-indigo-50/30' : ''}`}>
+                    <p className={`text-sm ${notif.unread ? 'font-medium text-slate-900' : 'text-slate-700'}`}>{notif.title}</p>
+                    <p className="text-xs text-slate-500 mt-1">{notif.time}</p>
                   </div>
                 ))}
               </div>
-              <div className="px-4 py-2 border-t border-gray-100 text-center">
+              <div className="px-4 py-2 border-t border-slate-100 text-center">
                 <span className="text-xs text-indigo-600 font-medium cursor-pointer hover:underline">View all</span>
               </div>
             </div>
           )}
         </div>
         
-        <div className="h-8 w-px bg-gray-200 mx-2"></div>
+        <div className="h-8 w-px bg-slate-200 mx-2"></div>
         
         <div className="relative">
           <button 
@@ -85,8 +85,8 @@ export default function Navbar({ setMobileMenuOpen }) {
             className="flex items-center gap-3 hover:opacity-80 transition-opacity focus:outline-none"
           >
             <div className="text-right hidden sm:block">
-              <p className="text-sm font-medium text-gray-900 leading-none">{user?.name || 'User'}</p>
-              <p className="text-xs text-gray-500 mt-1">{user?.email}</p>
+              <p className="text-sm font-medium text-slate-900 leading-none">{user?.name || 'User'}</p>
+              <p className="text-xs text-slate-500 mt-1">{user?.email}</p>
             </div>
             <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 text-white flex items-center justify-center font-semibold text-sm shadow-sm ring-2 ring-white uppercase">
               {user?.name ? user.name.charAt(0) : 'U'}
@@ -94,7 +94,7 @@ export default function Navbar({ setMobileMenuOpen }) {
           </button>
           
           {showDropdown && (
-            <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-xl shadow-lg z-50 py-1">
+            <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] z-50 py-1">
               <button
                 onClick={() => {
                   setShowDropdown(false);

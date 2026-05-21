@@ -58,34 +58,34 @@ export default function TicketTable({ tickets, isLoading, error }) {
   }
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+    <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm whitespace-nowrap">
-          <thead className="bg-gray-50 border-b border-gray-200 text-gray-600">
+          <thead className="bg-slate-50/50 border-b border-slate-200 text-slate-500">
             <tr>
-              <th className="px-6 py-4 font-semibold">Customer</th>
-              <th className="px-6 py-4 font-semibold">Subject</th>
-              <th className="px-6 py-4 font-semibold">Status</th>
-              <th className="px-6 py-4 font-semibold">Category</th>
-              <th className="px-6 py-4 font-semibold">Urgency</th>
-              <th className="px-6 py-4 font-semibold">Sentiment</th>
-              <th className="px-6 py-4 font-semibold">Created At</th>
+              <th className="px-6 py-3 font-medium text-[11px] uppercase tracking-wider">Customer</th>
+              <th className="px-6 py-3 font-medium text-[11px] uppercase tracking-wider">Subject</th>
+              <th className="px-6 py-3 font-medium text-[11px] uppercase tracking-wider">Status</th>
+              <th className="px-6 py-3 font-medium text-[11px] uppercase tracking-wider">Category</th>
+              <th className="px-6 py-3 font-medium text-[11px] uppercase tracking-wider">Urgency</th>
+              <th className="px-6 py-3 font-medium text-[11px] uppercase tracking-wider">Sentiment</th>
+              <th className="px-6 py-3 font-medium text-[11px] uppercase tracking-wider">Created At</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y divide-slate-100">
             {tickets.map((ticket) => (
               <tr 
                 key={ticket.id} 
                 onClick={() => navigate(`/tickets/${ticket.id}`)}
-                className="hover:bg-gray-50 transition-colors group cursor-pointer"
+                className="hover:bg-slate-50/80 transition-colors group cursor-pointer"
               >
                 <td className="px-6 py-4">
-                  <div className="font-medium text-gray-900 group-hover:text-indigo-600 transition-colors">
+                  <div className="font-medium text-slate-900 group-hover:text-indigo-600 transition-colors text-sm">
                     {ticket.customer_name}
                   </div>
-                  <div className="text-gray-500 text-xs mt-0.5">{ticket.customer_email}</div>
+                  <div className="text-slate-500 text-xs mt-0.5">{ticket.customer_email}</div>
                 </td>
-                <td className="px-6 py-4 text-gray-700">
+                <td className="px-6 py-4 text-slate-700 text-sm">
                   <div className="truncate max-w-xs font-medium" title={ticket.subject}>
                     {ticket.subject}
                   </div>
@@ -116,7 +116,7 @@ export default function TicketTable({ tickets, isLoading, error }) {
                     } 
                   />
                 </td>
-                <td className="px-6 py-4 text-gray-500">
+                <td className="px-6 py-4 text-slate-500 text-sm">
                   {new Date(ticket.created_at).toLocaleDateString(undefined, {
                     year: 'numeric',
                     month: 'short',

@@ -104,7 +104,7 @@ export default function TicketDetail() {
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <button 
           onClick={() => navigate('/tickets')}
-          className="flex items-center text-sm text-gray-500 hover:text-gray-900 transition-colors"
+          className="flex items-center text-sm text-slate-500 hover:text-slate-900 transition-colors"
         >
           <ArrowLeft className="w-4 h-4 mr-1.5" /> Back to Tickets
         </button>
@@ -119,16 +119,16 @@ export default function TicketDetail() {
         {/* Main Content (Left Col) */}
         <div className="lg:col-span-2 space-y-6">
           {/* Ticket Header & Message */}
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-            <div className="p-6 border-b border-gray-100">
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="p-6 border-b border-slate-100">
               <div className="flex justify-between items-start mb-4 gap-4 flex-col sm:flex-row">
-                <h1 className="text-2xl font-bold text-gray-900">{ticket.subject}</h1>
+                <h1 className="text-2xl font-semibold text-slate-900 tracking-tight">{ticket.subject}</h1>
                 <Badge label={ticket.status} variant={getStatusVariant(ticket.status)} />
               </div>
-              <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+              <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500">
                 <div className="flex items-center">
                   <User className="w-4 h-4 mr-1.5" />
-                  <span className="font-medium text-gray-900 mr-1">{ticket.customer_name}</span>
+                  <span className="font-medium text-slate-900 mr-1">{ticket.customer_name}</span>
                 </div>
                 <div className="flex items-center">
                   <Mail className="w-4 h-4 mr-1.5" />
@@ -142,9 +142,9 @@ export default function TicketDetail() {
                 </div>
               </div>
             </div>
-            <div className="p-6 bg-gray-50">
-              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">Original Message</h3>
-              <div className="bg-white p-5 rounded-lg border border-gray-200 shadow-sm text-gray-700 whitespace-pre-wrap leading-relaxed min-h-[150px]">
+            <div className="p-6 bg-slate-50">
+              <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider mb-4">Original Message</h3>
+              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm text-slate-700 whitespace-pre-wrap leading-relaxed min-h-[150px] text-sm">
                 {ticket.message}
               </div>
             </div>
@@ -158,16 +158,16 @@ export default function TicketDetail() {
         <div className="lg:col-span-1">
           <TicketMetadata ticket={ticket} />
           
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-             <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">Ticket Info</h3>
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+             <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider mb-4">Ticket Info</h3>
              <div className="space-y-4">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">Ticket ID</span>
-                  <span className="font-medium text-gray-900">#{ticket.id}</span>
+                  <span className="text-slate-500">Ticket ID</span>
+                  <span className="font-medium text-slate-900">#{ticket.id}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">Created</span>
-                  <span className="font-medium text-gray-900">{new Date(ticket.created_at).toLocaleDateString()}</span>
+                  <span className="text-slate-500">Created</span>
+                  <span className="font-medium text-slate-900">{new Date(ticket.created_at).toLocaleDateString()}</span>
                 </div>
              </div>
           </div>

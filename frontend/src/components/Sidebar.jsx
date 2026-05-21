@@ -24,34 +24,34 @@ export default function Sidebar({ mobileMenuOpen, setMobileMenuOpen }) {
       {/* Mobile overlay */}
       {mobileMenuOpen && (
         <div 
-          className="fixed inset-0 bg-gray-900/50 z-40 md:hidden"
+          className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 md:hidden"
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
       
       <aside 
-        className={`bg-white border-r border-gray-200 transition-all duration-300 flex flex-col h-screen fixed md:sticky top-0 z-50 ${
+        className={`bg-white border-r border-slate-200 transition-all duration-300 flex flex-col h-screen fixed md:sticky top-0 z-50 ${
           isCollapsed ? 'md:w-20' : 'md:w-64'
         } ${mobileMenuOpen ? 'w-64 translate-x-0' : 'w-64 -translate-x-full md:translate-x-0'}`}
       >
-        <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200">
+        <div className="h-16 flex items-center justify-between px-4 border-b border-slate-200">
           {(!isCollapsed || mobileMenuOpen) && (
-            <div className="flex items-center gap-2 font-bold text-lg text-gray-900">
-              <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white">
+            <div className="flex items-center gap-2 font-bold text-lg text-slate-900 tracking-tight">
+              <div className="w-8 h-8 rounded-[6px] bg-indigo-600 shadow-sm flex items-center justify-center text-white">
                 AI
               </div>
               <span>TicketRoute</span>
             </div>
           )}
           {isCollapsed && !mobileMenuOpen && (
-            <div className="w-8 h-8 mx-auto rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold">
+            <div className="w-8 h-8 mx-auto rounded-[6px] bg-indigo-600 shadow-sm flex items-center justify-center text-white font-bold">
               AI
             </div>
           )}
         
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className={`hidden md:flex items-center justify-center p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition-colors ${isCollapsed ? 'hidden' : 'block'}`}
+          className={`hidden md:flex items-center justify-center p-1.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors ${isCollapsed ? 'hidden' : 'block'}`}
           title="Collapse sidebar"
         >
           <ChevronLeft className="w-5 h-5" />
@@ -59,7 +59,7 @@ export default function Sidebar({ mobileMenuOpen, setMobileMenuOpen }) {
         {isCollapsed && (
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-white border border-gray-200 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-50 hover:text-gray-900 cursor-pointer shadow-sm z-50"
+            className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-white border border-slate-200 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-50 hover:text-slate-900 cursor-pointer shadow-sm z-50"
             title="Expand sidebar"
           >
             <ChevronRight className="w-4 h-4" />
@@ -75,10 +75,10 @@ export default function Sidebar({ mobileMenuOpen, setMobileMenuOpen }) {
               <NavLink
                 key={index}
                 to={item.path}
-                className={({ isActive }) => `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors group ${
+                className={({ isActive }) => `flex items-center gap-3 px-3 py-2 rounded-[6px] transition-all group ${
                   isActive 
-                    ? 'bg-indigo-50 text-indigo-700 font-medium' 
-                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                    ? 'bg-slate-100 text-slate-900 font-medium' 
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                 }`}
                 title={isCollapsed && !mobileMenuOpen ? item.label : undefined}
                 onClick={() => {
@@ -87,12 +87,12 @@ export default function Sidebar({ mobileMenuOpen, setMobileMenuOpen }) {
               >
                 {({ isActive }) => (
                   <>
-                    <Icon className={`w-5 h-5 ${isActive ? 'text-indigo-600' : 'text-gray-500 group-hover:text-gray-900'}`} />
+                    <Icon className={`w-5 h-5 ${isActive ? 'text-indigo-600' : 'text-slate-500 group-hover:text-slate-900'}`} />
                     {(!isCollapsed || mobileMenuOpen) && (
                       <span className="flex-1">{item.label}</span>
                     )}
                     {(!isCollapsed || mobileMenuOpen) && item.badge && (
-                      <span className="bg-indigo-100 text-indigo-600 py-0.5 px-2 rounded-full text-xs font-semibold">
+                      <span className="bg-slate-100 text-slate-600 border border-slate-200 py-0.5 px-2 rounded-full text-[10px] uppercase tracking-wider font-semibold">
                         {item.badge}
                       </span>
                     )}

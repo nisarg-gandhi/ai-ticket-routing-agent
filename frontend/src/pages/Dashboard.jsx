@@ -42,19 +42,19 @@ export default function Dashboard() {
     <div className="max-w-7xl mx-auto space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Overview</h1>
-          <p className="text-gray-500 text-sm mt-1">Track your AI support agent's performance</p>
+          <h1 className="text-2xl font-semibold text-slate-900 tracking-tight">Overview</h1>
+          <p className="text-slate-500 text-sm mt-1">Track your AI support agent's performance</p>
         </div>
         <div className="flex gap-3">
           <button 
             onClick={() => navigate('/reports')}
-            className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 hover:shadow-md active:scale-95 transition-all duration-200 text-sm font-medium shadow-sm"
+            className="px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 hover:shadow-sm active:scale-95 transition-all duration-200 text-sm font-medium shadow-sm"
           >
             Export Report
           </button>
           <button 
             onClick={() => navigate('/tickets/new')}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 hover:shadow-md active:scale-95 transition-all duration-200 text-sm font-medium shadow-sm ring-1 ring-indigo-600 ring-offset-1"
+            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 hover:shadow-sm active:scale-95 transition-all duration-200 text-sm font-medium shadow-sm"
           >
             New Ticket
           </button>
@@ -79,8 +79,8 @@ export default function Dashboard() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 bg-white border border-gray-200 rounded-xl p-6 shadow-sm min-h-[400px] flex flex-col">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Ticket Volume</h2>
+            <div className="lg:col-span-2 bg-white border border-slate-200 rounded-xl p-6 shadow-sm min-h-[400px] flex flex-col">
+              <h2 className="text-lg font-semibold text-slate-900 mb-4 tracking-tight">Ticket Volume</h2>
               <div className="flex-1 w-full h-[300px]">
                 {charts?.volume_trend && (
                   <ResponsiveContainer width="100%" height="100%">
@@ -98,8 +98,8 @@ export default function Dashboard() {
               </div>
             </div>
             
-            <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm min-h-[400px] flex flex-col">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Category Distribution</h2>
+            <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm min-h-[400px] flex flex-col">
+              <h2 className="text-lg font-semibold text-slate-900 mb-4 tracking-tight">Category Distribution</h2>
               <div className="flex-1 flex flex-col items-center justify-center h-[300px]">
                 {charts?.category_distribution && charts.category_distribution.length > 0 ? (
                   <>
@@ -127,13 +127,13 @@ export default function Dashboard() {
                       {charts.category_distribution.map((entry, index) => (
                         <div key={index} className="flex items-center gap-2">
                           <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }}></div>
-                          <span className="text-xs text-gray-600 font-medium">{entry.name}</span>
+                          <span className="text-xs text-slate-600 font-medium">{entry.name}</span>
                         </div>
                       ))}
                     </div>
                   </>
                 ) : (
-                  <p className="text-gray-400 text-sm">No data available</p>
+                  <p className="text-slate-400 text-sm">No data available</p>
                 )}
               </div>
             </div>

@@ -17,7 +17,7 @@ export default function DraftResponseBox({ draftResponse }) {
   }
 
   return (
-    <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl border border-indigo-100 p-6 shadow-sm">
+    <div className="bg-indigo-50/50 rounded-xl border border-indigo-100/50 p-6 shadow-sm">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-2 text-indigo-700 font-semibold">
           <Sparkles className="w-5 h-5" />
@@ -40,7 +40,7 @@ export default function DraftResponseBox({ draftResponse }) {
           )}
         </button>
       </div>
-      <div className="bg-white rounded-lg p-5 border border-indigo-100 shadow-sm text-gray-700 whitespace-pre-wrap leading-relaxed">
+      <div className="bg-white rounded-xl p-5 border border-indigo-100/50 shadow-sm text-slate-700 whitespace-pre-wrap leading-relaxed text-sm">
         {draftResponse}
       </div>
     </div>
