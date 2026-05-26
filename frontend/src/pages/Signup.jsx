@@ -40,7 +40,7 @@ const Register = () => {
             <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center">
               <GitBranch className="w-5 h-5 text-white" />
             </div>
-            <span className="font-bold text-xl text-slate-900">TicketRoute</span>
+            <span className="font-bold text-xl text-slate-900">Triage</span>
           </div>
           <div className="mx-auto h-12 w-12 bg-indigo-50 border border-indigo-100 rounded-xl flex items-center justify-center">
             <UserPlus className="h-6 w-6 text-indigo-600" />
