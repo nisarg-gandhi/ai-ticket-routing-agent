@@ -52,8 +52,8 @@ const RootRedirect = () => {
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
+    <Router>
+      <AuthProvider>
         <Toast />
         <Routes>
           {/* Root → smart redirect */}
@@ -132,8 +132,8 @@ function App() {
           {/* Global catch-all */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </Router>
-    </AuthProvider>
+      </AuthProvider>
+    </Router>
   );
 }
 
