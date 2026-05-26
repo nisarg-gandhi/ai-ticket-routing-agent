@@ -1,3 +1,5 @@
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
 export const fetchWithAuth = async (url, options = {}) => {
   const token = localStorage.getItem('token');
   
@@ -10,7 +12,8 @@ export const fetchWithAuth = async (url, options = {}) => {
     headers['Authorization'] = `Bearer ${token}`;
   }
 
-  const response = await fetch(url, {
+  const fullUrl = `${BASE_URL}${url}`;
+  const response = await fetch(fullUrl, {
     ...options,
     headers,
   });

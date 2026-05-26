@@ -1,8 +1,8 @@
-const API_BASE_URL = 'http://localhost:8000';
+import { fetchWithAuth } from '../utils/fetchWithAuth';
 
 export const authService = {
   login: async (email, password) => {
-    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+    const response = await fetchWithAuth('/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -19,7 +19,7 @@ export const authService = {
   },
 
   register: async (name, email, password) => {
-    const response = await fetch(`${API_BASE_URL}/auth/register`, {
+    const response = await fetchWithAuth('/auth/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -36,7 +36,7 @@ export const authService = {
   },
 
   getMe: async (token) => {
-    const response = await fetch(`${API_BASE_URL}/auth/me`, {
+    const response = await fetchWithAuth('/auth/me', {
       headers: {
         'Authorization': `Bearer ${token}`
       }

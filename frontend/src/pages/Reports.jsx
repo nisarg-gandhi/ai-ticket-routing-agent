@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { analyticsService } from '../services/analyticsService';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useAuth } from '../contexts/AuthContext';
+import { fetchWithAuth } from '../utils/fetchWithAuth';
 
 export default function Reports() {
   const [charts, setCharts] = useState(null);
@@ -16,7 +17,7 @@ export default function Reports() {
 
   const handleExport = async () => {
     try {
-      const response = await fetch('http://localhost:8000/tickets/export');
+      const response = await fetchWithAuth('/tickets/export');
       if (!response.ok) throw new Error('Failed to export');
       const blob = await response.blob();
       const downloadUrl = window.URL.createObjectURL(blob);

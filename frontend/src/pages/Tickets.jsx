@@ -6,6 +6,7 @@ import TicketTable from '../components/TicketTable';
 import SearchBar from '../components/SearchBar';
 import TicketFilters from '../components/TicketFilters';
 import { useAuth } from '../contexts/AuthContext';
+import { fetchWithAuth } from '../utils/fetchWithAuth';
 
 export default function Tickets() {
   const { user } = useAuth();
@@ -89,9 +90,9 @@ export default function Tickets() {
       if (filters.category) queryParams.append('category', filters.category);
       if (filters.urgency) queryParams.append('urgency', filters.urgency);
 
-      const url = `http://localhost:8000/tickets/export?${queryParams.toString()}`;
+      const url = `/tickets/export?${queryParams.toString()}`;
       
-      const response = await fetch(url);
+      const response = await fetchWithAuth(url);
       if (!response.ok) throw new Error('Failed to export tickets');
 
       const blob = await response.blob();
