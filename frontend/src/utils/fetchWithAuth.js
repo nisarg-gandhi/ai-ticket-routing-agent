@@ -1,5 +1,8 @@
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
+let sessionExpired = false;
+export const resetSessionExpired = () => { sessionExpired = false; };
+
 export const fetchWithAuth = async (url, options = {}) => {
   const token = localStorage.getItem('token');
   
@@ -19,9 +22,13 @@ export const fetchWithAuth = async (url, options = {}) => {
   });
 
   if (response.status === 401) {
-    // Token is invalid or expired
-    localStorage.removeItem('token');
-    window.location.href = '/login'; // Redirect to login
+    // Guard against multiple concurrent 401s all firing the event.
+    if (!sessionExpired) {
+      sessionExpired = true;
+      // Dispatch a global event so AuthContext can clear React state,
+      // show a toast, and navigate to /login — all in one place.
+      window.dispatchEvent(new CustomEvent('session:expired'));
+    }
   }
 
   return response;

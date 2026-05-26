@@ -7,6 +7,7 @@ import UserLayout from './layouts/UserLayout';
 // Auth
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { UserProtectedRoute, AdminProtectedRoute } from './components/ProtectedRoute';
+import Toast from './components/Toast';
 
 // Public pages
 import Login from './pages/Login';
@@ -53,6 +54,7 @@ function App() {
   return (
     <AuthProvider>
       <Router>
+        <Toast />
         <Routes>
           {/* Root → smart redirect */}
           <Route path="/" element={<RootRedirect />} />

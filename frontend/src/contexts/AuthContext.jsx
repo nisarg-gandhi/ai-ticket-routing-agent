@@ -1,11 +1,18 @@
-import { createContext, useState, useEffect, useContext } from 'react';
+import { createContext, useState, useEffect, useContext, useCallback, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { authService } from '../services/authService';
+import { resetSessionExpired } from '../utils/fetchWithAuth';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  // Keep a stable ref to navigate so the event listener never goes stale.
+  const navigateRef = useRef(navigate);
+  useEffect(() => { navigateRef.current = navigate; }, [navigate]);
 
   useEffect(() => {
     const initAuth = async () => {
@@ -24,6 +31,27 @@ export const AuthProvider = ({ children }) => {
 
     initAuth();
   }, []);
+
+  // Handle 401 responses emitted by fetchWithAuth.
+  const handleSessionExpired = useCallback(() => {
+    localStorage.removeItem('token');
+    setUser(null);
+    resetSessionExpired(); // Allow future 401s to trigger the event again.
+
+    // Show toast notification.
+    window.dispatchEvent(
+      new CustomEvent('toast:show', {
+        detail: { message: 'Session expired — please sign in again', type: 'error' },
+      })
+    );
+
+    navigateRef.current('/login', { replace: true });
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('session:expired', handleSessionExpired);
+    return () => window.removeEventListener('session:expired', handleSessionExpired);
+  }, [handleSessionExpired]);
 
   // Returns the userData so callers can redirect based on role.
   const login = async (email, password) => {
@@ -52,3 +80,4 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
+
