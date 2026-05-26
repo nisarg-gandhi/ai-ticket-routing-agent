@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { LogOut } from 'lucide-react';
+import { LogOut, GitBranch } from 'lucide-react';
 
 export default function UserLayout({ children }) {
   const { user, logout } = useAuth();
@@ -17,13 +17,13 @@ export default function UserLayout({ children }) {
       <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-8 sticky top-0 z-10 shadow-sm">
         {/* Logo */}
         <div
-          className="flex items-center gap-2 font-bold text-lg text-slate-900 tracking-tight cursor-pointer"
+          className="flex items-center gap-2 cursor-pointer"
           onClick={() => navigate('/user/dashboard')}
         >
-          <div className="w-8 h-8 rounded-[6px] bg-indigo-600 shadow-sm flex items-center justify-center text-white text-sm font-bold select-none">
-            AI
+          <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
+            <GitBranch className="w-4 h-4 text-white" />
           </div>
-          <span>TicketRoute</span>
+          <span className="font-semibold text-slate-900">TicketRoute</span>
         </div>
 
         {/* Right side */}

@@ -6,7 +6,8 @@ import {
   Users, 
   ChevronLeft, 
   ChevronRight,
-  BarChart3
+  BarChart3,
+  GitBranch
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -38,16 +39,16 @@ export default function Sidebar({ mobileMenuOpen, setMobileMenuOpen }) {
       >
         <div className="h-16 flex items-center justify-between px-4 border-b border-slate-200">
           {(!isCollapsed || mobileMenuOpen) && (
-            <div className="flex items-center gap-2 font-bold text-lg text-slate-900 tracking-tight">
-              <div className="w-8 h-8 rounded-[6px] bg-indigo-600 shadow-sm flex items-center justify-center text-white">
-                AI
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
+                <GitBranch className="w-4 h-4 text-white" />
               </div>
-              <span>TicketRoute</span>
+              <span className="font-semibold text-slate-900">TicketRoute</span>
             </div>
           )}
           {isCollapsed && !mobileMenuOpen && (
-            <div className="w-8 h-8 mx-auto rounded-[6px] bg-indigo-600 shadow-sm flex items-center justify-center text-white font-bold">
-              AI
+            <div className="w-8 h-8 mx-auto rounded-lg bg-indigo-600 flex items-center justify-center">
+              <GitBranch className="w-4 h-4 text-white" />
             </div>
           )}
         

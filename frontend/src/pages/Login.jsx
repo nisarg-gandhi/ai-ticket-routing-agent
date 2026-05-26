@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { LogIn, Mail, Lock, AlertCircle } from 'lucide-react';
+import { LogIn, Mail, Lock, AlertCircle, GitBranch } from 'lucide-react';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -35,6 +35,12 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 bg-white p-8 sm:p-10 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200">
         <div className="text-center">
+          <div className="flex items-center justify-center gap-2.5 mb-6">
+            <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center">
+              <GitBranch className="w-5 h-5 text-white" />
+            </div>
+            <span className="font-bold text-xl text-slate-900">TicketRoute</span>
+          </div>
           <div className="mx-auto h-12 w-12 bg-indigo-50 border border-indigo-100 rounded-xl flex items-center justify-center">
             <LogIn className="h-6 w-6 text-indigo-600" />
           </div>
