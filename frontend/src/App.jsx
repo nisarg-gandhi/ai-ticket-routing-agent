@@ -10,6 +10,7 @@ import { UserProtectedRoute, AdminProtectedRoute } from './components/ProtectedR
 import Toast from './components/Toast';
 
 // Public pages
+import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 
@@ -39,11 +40,11 @@ const PublicRoute = ({ children }) => {
   return children;
 };
 
-// Root redirect: send authenticated users to the right portal, else to login
+// Root redirect: show landing page to guests, send authenticated users to their portal
 const RootRedirect = () => {
   const { user, loading } = useAuth();
   if (loading) return null;
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) return <LandingPage />;
   if (user.role === 'admin' || user.role === 'agent') {
     return <Navigate to="/admin/dashboard" replace />;
   }
