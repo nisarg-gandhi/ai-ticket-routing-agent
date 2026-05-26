@@ -4,8 +4,6 @@ from typing import Optional
 
 # Schema for creating a ticket (what we expect from the client)
 class TicketCreate(BaseModel):
-    customer_name: str
-    customer_email: EmailStr # Validates email format
     subject: str
     message: str
 

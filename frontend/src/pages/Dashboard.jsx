@@ -36,10 +36,10 @@ export default function Dashboard() {
   }, [user]);
 
   const stats = overview ? [
-    { title: 'Total Tickets', value: overview.total_tickets.toString(), trend: 'up', trendValue: '12', icon: Ticket },
-    { title: 'Resolution Rate', value: `${overview.resolution_rate}%`, trend: 'up', trendValue: '5', icon: TrendingUp },
-    { title: 'Resolved Tickets', value: overview.resolved_tickets.toString(), trend: 'up', trendValue: '24', icon: CheckCircle2 },
-    { title: 'High Urgency', value: overview.high_urgency_tickets.toString(), trend: 'down', trendValue: '2', icon: AlertCircle },
+    { title: 'Total Tickets', value: overview.total_tickets.toString(), icon: Ticket },
+    { title: 'Resolution Rate', value: `${overview.resolution_rate}%`, icon: TrendingUp },
+    { title: 'Resolved Tickets', value: overview.resolved_tickets.toString(), icon: CheckCircle2 },
+    { title: 'High Urgency', value: overview.high_urgency_tickets.toString(), icon: AlertCircle },
   ] : [];
 
   const COLORS = ['#4f46e5', '#ec4899', '#f59e0b', '#10b981', '#6366f1'];
@@ -60,12 +60,6 @@ export default function Dashboard() {
               Export Report
             </button>
           )}
-          <button 
-            onClick={() => navigate('/admin/tickets/new')}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 hover:shadow-sm active:scale-95 transition-all duration-200 text-sm font-medium shadow-sm"
-          >
-            New Ticket
-          </button>
         </div>
       </div>
 

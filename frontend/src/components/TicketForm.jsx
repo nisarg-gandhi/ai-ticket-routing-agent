@@ -4,8 +4,6 @@ import { CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 
 export default function TicketForm() {
   const [formData, setFormData] = useState({
-    customer_name: '',
-    customer_email: '',
     subject: '',
     message: ''
   });
@@ -22,9 +20,6 @@ export default function TicketForm() {
   };
 
   const validateForm = () => {
-    if (!formData.customer_name.trim()) return 'Name is required';
-    if (!formData.customer_email.trim()) return 'Email is required';
-    if (!/^\S+@\S+\.\S+$/.test(formData.customer_email)) return 'Invalid email format';
     if (!formData.subject.trim()) return 'Subject is required';
     if (!formData.message.trim()) return 'Message is required';
     return null;
@@ -47,8 +42,6 @@ export default function TicketForm() {
       await ticketService.createTicket(formData);
       setStatus('success');
       setFormData({
-        customer_name: '',
-        customer_email: '',
         subject: '',
         message: ''
       });
@@ -91,40 +84,6 @@ export default function TicketForm() {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-5">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div className="space-y-1.5">
-            <label htmlFor="customer_name" className="block text-sm font-medium text-gray-700">
-              Full Name
-            </label>
-            <input
-              type="text"
-              id="customer_name"
-              name="customer_name"
-              value={formData.customer_name}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
-              placeholder="Jane Doe"
-              disabled={status === 'loading'}
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <label htmlFor="customer_email" className="block text-sm font-medium text-gray-700">
-              Email Address
-            </label>
-            <input
-              type="email"
-              id="customer_email"
-              name="customer_email"
-              value={formData.customer_email}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
-              placeholder="jane@example.com"
-              disabled={status === 'loading'}
-            />
-          </div>
-        </div>
-
         <div className="space-y-1.5">
           <label htmlFor="subject" className="block text-sm font-medium text-gray-700">
             Subject

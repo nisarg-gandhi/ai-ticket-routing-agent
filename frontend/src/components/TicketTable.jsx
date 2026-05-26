@@ -124,12 +124,10 @@ export default function TicketTable({ tickets, isLoading, error }) {
                   />
                 </td>
                 <td className="px-6 py-4 text-slate-500 text-sm">
-                  {new Date(ticket.created_at).toLocaleDateString(undefined, {
+                  {new Date(ticket.created_at).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'short',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
+                    day: 'numeric'
                   })}
                 </td>
               </tr>

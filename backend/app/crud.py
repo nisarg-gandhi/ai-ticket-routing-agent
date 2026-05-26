@@ -62,13 +62,13 @@ def update_ticket_status(db: Session, ticket_id: int, status: str, user_id: int,
     return db_ticket
 
 # Function to create a new ticket
-def create_ticket(db: Session, ticket: schemas.TicketCreate, user_id: int):
+def create_ticket(db: Session, ticket: schemas.TicketCreate, user_id: int, user: models.User):
     # Step 1: Call the AI service to classify the ticket based on subject and message
     classification = ai_service.classify_ticket(subject=ticket.subject, message=ticket.message)
     
     # Step 2: Call the AI service to generate a draft response
     draft_response = ai_service.generate_draft_response(
-        customer_name=ticket.customer_name,
+        customer_name=user.name,
         subject=ticket.subject,
         message=ticket.message,
         category=classification.get("category"),
@@ -81,8 +81,8 @@ def create_ticket(db: Session, ticket: schemas.TicketCreate, user_id: int):
     # Step 3: Create the ticket object with the AI metadata
     db_ticket = models.Ticket(
         user_id=user_id,
-        customer_name=ticket.customer_name,
-        customer_email=ticket.customer_email,
+        customer_name=user.name,
+        customer_email=user.email,
         subject=ticket.subject,
         message=ticket.message,
         status="open", # Default status when a ticket is created
@@ -209,3 +209,15 @@ def get_aggregated_customers(db: Session, user_id: int, role: str = "user"):
     # Sort by ticket count descending
     customers.sort(key=lambda x: x["tickets"], reverse=True)
     return customers
+
+def get_needs_review_tickets(db: Session, user_id: int, role: str = "user", skip: int = 0, limit: int = 100):
+    query = db.query(models.Ticket).filter(
+        models.Ticket.needs_review == True,
+        models.Ticket.status == "open"
+    )
+    
+    # Only filter by user_id for regular users; admins and agents see all needs-review tickets
+    if role == "user":
+        query = query.filter(models.Ticket.user_id == user_id)
+    
+    return query.order_by(models.Ticket.id.desc()).offset(skip).limit(limit).all()

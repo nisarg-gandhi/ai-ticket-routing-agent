@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Users, Search, MoreVertical } from 'lucide-react';
+import { Search, MoreVertical } from 'lucide-react';
 import { customerService } from '../services/customerService';
 
 export default function Customers() {
@@ -20,15 +20,9 @@ export default function Customers() {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Customers</h1>
-          <p className="text-gray-500 mt-1">Manage your customer base and view their history.</p>
-        </div>
-        <button className="inline-flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-indigo-700 transition-colors shadow-sm">
-          <Users className="w-5 h-5" />
-          Add Customer
-        </button>
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900">Customers</h1>
+        <p className="text-gray-500 mt-1">Manage your customer base and view their history.</p>
       </div>
 
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">

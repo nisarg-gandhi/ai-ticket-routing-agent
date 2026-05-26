@@ -49,12 +49,6 @@ export default function TicketMetadata({ ticket }) {
         </div>
       </div>
       
-      {ticket.routing_reasoning && (
-        <div className="mb-4 bg-slate-50/50 rounded-lg border border-slate-100 p-3">
-          <p className="text-sm italic text-slate-600 line-clamp-2">{ticket.routing_reasoning}</p>
-        </div>
-      )}
-      
       {ticket.confidence !== undefined && ticket.confidence !== null && (
         <div className="mt-4 pt-4 border-t border-slate-100">
           <div className="flex justify-between text-xs mb-1.5">

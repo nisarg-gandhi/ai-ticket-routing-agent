@@ -19,7 +19,7 @@ def create_ticket(ticket: schemas.TicketCreate, db: Session = Depends(get_db), c
     """
     Create a new ticket.
     """
-    return crud.create_ticket(db=db, ticket=ticket, user_id=current_user.id)
+    return crud.create_ticket(db=db, ticket=ticket, user_id=current_user.id, user=current_user)
 
 @router.get("/", response_model=List[schemas.Ticket])
 def read_tickets(
@@ -107,13 +107,16 @@ def read_needs_review_tickets(
     current_user: models.User = Depends(require_role("admin", "agent"))
 ):
     """
-    Retrieve all tickets belonging to the current user where needs_review is True and status is "open".
+    Retrieve tickets where needs_review is True and status is "open".
+    Admins and agents see all such tickets; regular users see only their own.
     """
-    tickets = db.query(models.Ticket).filter(
-        models.Ticket.user_id == current_user.id,
-        models.Ticket.needs_review == True,
-        models.Ticket.status == "open"
-    ).order_by(models.Ticket.id.desc()).offset(skip).limit(limit).all()
+    tickets = crud.get_needs_review_tickets(
+        db,
+        user_id=current_user.id,
+        role=current_user.role,
+        skip=skip,
+        limit=limit
+    )
     return tickets
 
 @router.get("/{ticket_id}", response_model=schemas.Ticket)
