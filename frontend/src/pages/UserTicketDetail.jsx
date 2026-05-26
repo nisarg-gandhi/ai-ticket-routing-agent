@@ -57,7 +57,7 @@ function StatusTimeline({ status }) {
   const isResolved = status === 'resolved';
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+    <div className="bg-white rounded-2xl border border-slate-200/80 p-6">
       <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-5">
         Ticket Progress
       </h3>
@@ -78,7 +78,7 @@ function StatusTimeline({ status }) {
                       ? 'bg-emerald-500 text-white'
                       : isActive
                       ? 'bg-indigo-600 text-white ring-4 ring-indigo-100'
-                      : 'bg-slate-100 text-slate-400'}
+                      : 'bg-slate-100 text-slate-300'}
                   `}
                 >
                   {isComplete || isResolved ? (
@@ -153,7 +153,7 @@ export default function UserTicketDetail() {
     return (
       <div className="flex flex-col items-center justify-center py-24">
         <RefreshCcw className="w-9 h-9 text-indigo-500 animate-spin mb-4" />
-        <p className="text-slate-500 font-medium">Loading ticket details…</p>
+        <p className="text-slate-400 font-medium text-sm">Loading ticket details…</p>
       </div>
     );
   }
@@ -166,7 +166,7 @@ export default function UserTicketDetail() {
         <p className="text-sm text-red-500 mb-6">{error}</p>
         <Link
           to="/user/dashboard"
-          className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-medium hover:bg-indigo-700 transition-colors"
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-xl text-sm font-semibold hover:from-indigo-500 hover:to-violet-500 shadow-md shadow-indigo-500/20 transition-all"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Dashboard
@@ -183,7 +183,7 @@ export default function UserTicketDetail() {
       <button
         id="back-to-dashboard-btn"
         onClick={() => navigate('/user/dashboard')}
-        className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 transition-colors"
+        className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-indigo-600 transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
         Back to Dashboard
@@ -193,7 +193,7 @@ export default function UserTicketDetail() {
         {/* ── Main content column ── */}
         <div className="lg:col-span-2 space-y-6">
           {/* Ticket header card */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden">
             <div className="p-6 border-b border-slate-100">
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-3">
                 <h1 className="text-2xl font-semibold text-slate-900 tracking-tight leading-snug">
@@ -227,7 +227,7 @@ export default function UserTicketDetail() {
           <StatusTimeline status={ticket.status} />
 
           {/* AI Analysis card — simplified for customers */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+          <div className="bg-white rounded-2xl border border-slate-200/80 p-6">
             <h3 className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-4">
               AI Analysis
             </h3>

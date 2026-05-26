@@ -48,14 +48,14 @@ export default function Dashboard() {
     <div className="max-w-7xl mx-auto space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold text-slate-900 tracking-tight">Overview</h1>
-          <p className="text-slate-500 text-sm mt-1">Track your AI support agent's performance</p>
+        <h1 className="text-2xl font-semibold text-slate-900 tracking-tight">Overview</h1>
+          <p className="text-slate-400 text-sm mt-1">Track your AI support agent's performance</p>
         </div>
         <div className="flex gap-3">
           {user?.role !== 'user' && (
             <button 
               onClick={() => navigate('/admin/reports')}
-              className="px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 hover:shadow-sm active:scale-95 transition-all duration-200 text-sm font-medium shadow-sm"
+              className="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50 hover:border-slate-300 active:scale-95 transition-all duration-200 text-sm font-medium"
             >
               Export Report
             </button>
@@ -64,12 +64,12 @@ export default function Dashboard() {
       </div>
 
       {user?.role === 'user' ? (
-        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-          <h2 className="text-lg font-semibold text-slate-900 mb-2">Welcome, {user?.name || 'User'}</h2>
-          <p className="text-slate-600 mb-4">Submit a ticket below or view your existing tickets.</p>
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-6">
+          <h2 className="text-base font-semibold text-slate-900 mb-1">Welcome, {user?.name || 'User'}</h2>
+          <p className="text-slate-400 text-sm mb-5">Submit a ticket below or view your existing tickets.</p>
           <button 
             onClick={() => navigate('/admin/tickets')}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium"
+            className="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-xl hover:from-indigo-500 hover:to-violet-500 shadow-md shadow-indigo-500/20 transition-all duration-200 text-sm font-semibold hover:-translate-y-0.5 active:scale-95"
           >
             View Tickets
           </button>
@@ -78,10 +78,10 @@ export default function Dashboard() {
         <div className="animate-pulse space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[1, 2, 3, 4].map(i => (
-              <div key={i} className="h-32 bg-gray-200 rounded-xl"></div>
+              <div key={i} className="h-32 bg-slate-100 rounded-2xl animate-pulse"></div>
             ))}
           </div>
-          <div className="h-[400px] bg-gray-200 rounded-xl"></div>
+          <div className="h-[400px] bg-slate-100 rounded-2xl animate-pulse"></div>
         </div>
       ) : (
         <>
@@ -92,8 +92,9 @@ export default function Dashboard() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 bg-white border border-slate-200 rounded-xl p-6 shadow-sm min-h-[400px] flex flex-col">
-              <h2 className="text-lg font-semibold text-slate-900 mb-4 tracking-tight">Ticket Volume</h2>
+            <div className="lg:col-span-2 bg-white border border-slate-200/80 rounded-2xl p-6 min-h-[400px] flex flex-col">
+              <h2 className="text-base font-semibold text-slate-900 mb-1 tracking-tight">Ticket Volume</h2>
+              <p className="text-xs text-slate-400 mb-4">Tickets created over time</p>
               <div className="flex-1 w-full h-[300px]">
                 {charts?.volume_trend && (
                   <ResponsiveContainer width="100%" height="100%">
@@ -111,8 +112,9 @@ export default function Dashboard() {
               </div>
             </div>
             
-            <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm min-h-[400px] flex flex-col">
-              <h2 className="text-lg font-semibold text-slate-900 mb-4 tracking-tight">Category Distribution</h2>
+            <div className="bg-white border border-slate-200/80 rounded-2xl p-6 min-h-[400px] flex flex-col">
+              <h2 className="text-base font-semibold text-slate-900 mb-1 tracking-tight">Category Distribution</h2>
+              <p className="text-xs text-slate-400 mb-4">Breakdown by support topic</p>
               <div className="flex-1 flex flex-col items-center justify-center h-[300px]">
                 {charts?.category_distribution && charts.category_distribution.length > 0 ? (
                   <>

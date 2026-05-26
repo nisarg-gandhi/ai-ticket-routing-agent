@@ -1,15 +1,20 @@
+// StatCard — matches landing page feature card aesthetic:
+// white surface, subtle border, no heavy shadow, indigo accent icon
+
 export default function StatCard({ title, value, icon: Icon }) {
   return (
-    <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300">
+    <div className="bg-white p-6 rounded-2xl border border-slate-200/80 hover:border-indigo-200 hover:shadow-sm hover:shadow-indigo-500/5 transition-all duration-300 group">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-medium text-slate-500">{title}</h3>
-        <div className="p-2 bg-slate-50 text-slate-600 border border-slate-100 rounded-lg">
-          <Icon className="w-5 h-5" />
+        <h3 className="text-sm font-medium text-slate-400 tracking-tight">{title}</h3>
+        <div className="p-2 bg-indigo-50 text-indigo-600 border border-indigo-100 rounded-xl group-hover:bg-indigo-100 transition-colors">
+          <Icon className="w-4 h-4" />
         </div>
       </div>
-      <div className="flex items-baseline">
+      <div className="flex items-baseline gap-1">
         <span className="text-3xl font-semibold text-slate-900 tracking-tight">{value}</span>
       </div>
+      {/* Indigo accent bar at the bottom */}
+      <div className="mt-4 h-0.5 w-8 rounded-full bg-indigo-400/40 group-hover:w-12 group-hover:bg-indigo-500/60 transition-all duration-300" />
     </div>
   );
 }

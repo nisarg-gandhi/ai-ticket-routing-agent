@@ -64,8 +64,8 @@ export default function TicketDetail() {
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
-        <RefreshCcw className="w-10 h-10 text-indigo-500 animate-spin mb-4" />
-        <p className="text-gray-500 font-medium text-lg">Loading ticket details...</p>
+        <RefreshCcw className="w-9 h-9 text-indigo-500 animate-spin mb-4" />
+        <p className="text-slate-400 font-medium">Loading ticket details…</p>
       </div>
     );
   }
@@ -73,12 +73,12 @@ export default function TicketDetail() {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
-        <AlertCircle className="w-12 h-12 text-red-500 mb-4" />
-        <h2 className="text-xl font-semibold text-gray-900 mb-2">Failed to load ticket</h2>
-        <p className="text-red-500 mb-6">{error}</p>
+        <AlertCircle className="w-12 h-12 text-red-400 mb-4" />
+        <h2 className="text-lg font-semibold text-slate-900 mb-2">Failed to load ticket</h2>
+        <p className="text-sm text-red-500 mb-6">{error}</p>
         <Link 
           to="/admin/tickets"
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
+          className="inline-flex items-center px-5 py-2.5 text-sm font-semibold rounded-xl text-white bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 shadow-md shadow-indigo-500/20 transition-all"
         >
           <ArrowLeft className="w-4 h-4 mr-2" /> Back to Tickets
         </Link>
@@ -94,9 +94,9 @@ export default function TicketDetail() {
     <div className="max-w-5xl mx-auto pb-10 relative">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-4 right-4 bg-gray-900 text-white px-4 py-3 rounded-lg shadow-lg flex items-center space-x-3 transition-opacity duration-300 z-50">
-          <CheckCircle className="w-5 h-5 text-green-400" />
-          <span className="font-medium capitalize">{toastMessage}</span>
+        <div className="fixed bottom-4 right-4 bg-white border border-indigo-100 text-slate-900 px-4 py-3 rounded-xl shadow-lg shadow-indigo-500/10 flex items-center space-x-3 transition-opacity duration-300 z-50">
+          <CheckCircle className="w-5 h-5 text-indigo-500" />
+          <span className="font-medium capitalize text-sm">{toastMessage}</span>
         </div>
       )}
 
@@ -104,7 +104,7 @@ export default function TicketDetail() {
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <button 
           onClick={() => navigate('/admin/tickets')}
-          className="flex items-center text-sm text-slate-500 hover:text-slate-900 transition-colors"
+          className="flex items-center text-sm text-slate-400 hover:text-indigo-600 transition-colors"
         >
           <ArrowLeft className="w-4 h-4 mr-1.5" /> Back to Tickets
         </button>
@@ -119,7 +119,7 @@ export default function TicketDetail() {
         {/* Main Content (Left Col) */}
         <div className="lg:col-span-2 space-y-6">
           {/* Ticket Header & Message */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden">
             <div className="p-6 border-b border-slate-100">
               <div className="flex justify-between items-start mb-4 gap-4 flex-col sm:flex-row">
                 <h1 className="text-2xl font-semibold text-slate-900 tracking-tight">{ticket.subject}</h1>
@@ -158,12 +158,12 @@ export default function TicketDetail() {
         <div className="lg:col-span-1">
           <TicketMetadata ticket={ticket} />
           
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+          <div className="bg-white rounded-2xl border border-slate-200/80 p-6">
              <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider mb-4">Ticket Info</h3>
              <div className="space-y-4">
                 <div className="flex justify-between text-sm">
                   <span className="text-slate-500">Ticket ID</span>
-                  <span className="font-medium text-slate-900">#{ticket.id}</span>
+                <span className="font-mono text-sm font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-lg">#{ticket.id}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-slate-500">Created</span>

@@ -21,11 +21,11 @@ export default function TicketMetadata({ ticket }) {
   };
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 mb-6">
+    <div className="bg-white rounded-2xl border border-slate-200/80 p-6 mb-6">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider">AI Analysis</h3>
         {ticket.needs_review && (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-100 text-amber-700 text-xs font-medium">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-violet-50 text-violet-700 border border-violet-200/80 text-xs font-medium">
             <AlertCircle className="w-3.5 h-3.5" />
             Needs Review
           </span>
@@ -57,7 +57,7 @@ export default function TicketMetadata({ ticket }) {
           </div>
           <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
             <div 
-              className={`h-full ${ticket.confidence >= 0.8 ? 'bg-green-500' : ticket.confidence >= 0.6 ? 'bg-yellow-500' : 'bg-red-500'}`} 
+              className="h-full bg-gradient-to-r from-indigo-500 to-violet-500 rounded-full transition-all duration-700"
               style={{ width: `${Math.max(0, Math.min(100, ticket.confidence * 100))}%` }}
             ></div>
           </div>

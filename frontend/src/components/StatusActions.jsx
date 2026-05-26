@@ -10,10 +10,10 @@ export default function StatusActions({ currentStatus, isUpdating, onUpdateStatu
       <button 
         onClick={() => onUpdateStatus('in_progress')}
         disabled={isResolved || isInProgress || isUpdating}
-        className={`flex items-center px-4 py-2 bg-white border rounded-lg text-sm font-medium transition-all duration-200 shadow-sm ${
+        className={`flex items-center px-4 py-2 bg-white border rounded-xl text-sm font-medium transition-all duration-200 ${
           isResolved || isInProgress 
             ? 'border-slate-200 text-slate-400 cursor-not-allowed bg-slate-50 opacity-70'
-            : 'border-slate-200 text-slate-700 hover:bg-slate-50 hover:shadow-sm hover:border-slate-300'
+            : 'border-slate-200 text-slate-700 hover:bg-indigo-50 hover:border-indigo-300 hover:text-indigo-700'
         }`}
       >
         {isUpdating === 'in_progress' ? (
@@ -28,10 +28,10 @@ export default function StatusActions({ currentStatus, isUpdating, onUpdateStatu
       <button 
         onClick={() => onUpdateStatus('resolved')}
         disabled={isResolved || isUpdating}
-        className={`flex items-center px-4 py-2 bg-white border rounded-lg text-sm font-medium transition-all duration-200 shadow-sm ${
+        className={`flex items-center px-4 py-2 bg-white border rounded-xl text-sm font-medium transition-all duration-200 ${
           isResolved 
             ? 'border-slate-200 text-slate-400 cursor-not-allowed bg-slate-50 opacity-70'
-            : 'border-emerald-200 text-emerald-700 hover:bg-emerald-50 hover:shadow-sm hover:border-emerald-300'
+            : 'border-emerald-200 text-emerald-700 hover:bg-emerald-50 hover:border-emerald-300'
         }`}
       >
         {isUpdating === 'resolved' ? (

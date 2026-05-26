@@ -22,4 +22,14 @@
     @apply bg-slate-50 text-slate-900 font-sans antialiased selection:bg-indigo-100 selection:text-indigo-900;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
+
+  /* Autofill style override for light dashboard inputs */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+    -webkit-text-fill-color: #0f172a !important;
+    caret-color: #0f172a;
+    transition: background-color 9999s ease-in-out 0s;
+  }
 }

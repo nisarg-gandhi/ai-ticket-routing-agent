@@ -114,9 +114,7 @@ const Register = () => {
                     bg-white/[0.05] border border-white/[0.08]
                     text-white placeholder-slate-500
                     focus:outline-none focus:border-indigo-500/60 focus:ring-1 focus:ring-indigo-500/40
-                    transition-colors duration-150
-                    [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_rgba(255,255,255,0.05)]
-                    [&:-webkit-autofill]:[-webkit-text-fill-color:#ffffff]"
+                    transition-colors duration-150"
                 />
               </div>
             </div>
@@ -143,9 +141,7 @@ const Register = () => {
                     bg-white/[0.05] border border-white/[0.08]
                     text-white placeholder-slate-500
                     focus:outline-none focus:border-indigo-500/60 focus:ring-1 focus:ring-indigo-500/40
-                    transition-colors duration-150
-                    [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_rgba(255,255,255,0.05)]
-                    [&:-webkit-autofill]:[-webkit-text-fill-color:#ffffff]"
+                    transition-colors duration-150"
                 />
               </div>
             </div>
@@ -173,9 +169,7 @@ const Register = () => {
                     bg-white/[0.05] border border-white/[0.08]
                     text-white placeholder-slate-500
                     focus:outline-none focus:border-indigo-500/60 focus:ring-1 focus:ring-indigo-500/40
-                    transition-colors duration-150
-                    [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_rgba(255,255,255,0.05)]
-                    [&:-webkit-autofill]:[-webkit-text-fill-color:#ffffff]"
+                    transition-colors duration-150"
                 />
               </div>
             </div>
