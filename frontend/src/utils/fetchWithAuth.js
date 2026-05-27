@@ -19,6 +19,9 @@ export const fetchWithAuth = async (url, options = {}) => {
   const response = await fetch(fullUrl, {
     ...options,
     headers,
+    // Prevent the browser from serving stale cached responses,
+    // which would cause polling to always return the same data.
+    cache: 'no-store',
   });
 
   if (response.status === 401) {
