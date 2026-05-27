@@ -1,6 +1,7 @@
 import { AlertCircle, Clock, RefreshCcw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Badge from './Badge';
+import { formatDate } from '../utils/formatDate';
 
 const StatusBadge = ({ status }) => {
   const variants = {
@@ -124,11 +125,7 @@ export default function TicketTable({ tickets, isLoading, error }) {
                   />
                 </td>
                 <td className="px-6 py-4 text-slate-500 text-sm">
-                  {new Date(ticket.created_at).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric'
-                  })}
+                  {formatDate(ticket.created_at)}
                 </td>
               </tr>
             ))}

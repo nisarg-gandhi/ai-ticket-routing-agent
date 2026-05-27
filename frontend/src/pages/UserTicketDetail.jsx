@@ -3,17 +3,9 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, AlertCircle, RefreshCcw, CheckCircle2, Circle, Clock } from 'lucide-react';
 import ticketService from '../services/ticketService';
 import Badge from '../components/Badge';
+import { formatDate } from '../utils/formatDate';
 
-// ─── Helpers ────────────────────────────────────────────────────────────────
-
-function formatDate(dateStr) {
-  if (!dateStr) return '—';
-  return new Date(dateStr).toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
-}
+// formatDate is imported from src/utils/formatDate.js
 
 const STATUS_VARIANT = {
   open: 'blue',
@@ -146,7 +138,21 @@ export default function UserTicketDetail() {
         setIsLoading(false);
       }
     };
+
     fetchTicket();
+
+    // Poll for updates every 10 seconds so the user sees status changes automatically
+    const intervalId = setInterval(async () => {
+      try {
+        const data = await ticketService.getTicket(id);
+        setTicket(data);
+      } catch {
+        // Silently ignore polling errors to avoid disrupting the UI
+      }
+    }, 10000);
+
+    // Clear the interval when the component unmounts or id changes
+    return () => clearInterval(intervalId);
   }, [id]);
 
   if (isLoading) {

@@ -21,6 +21,9 @@ class Ticket(Base):
     needs_review = Column(Boolean, default=False)
     ai_draft_response = Column(Text, nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+    resolved_at = Column(DateTime, nullable=True)
+    closed_at = Column(DateTime, nullable=True)
 
     user = relationship("User", back_populates="tickets")
 

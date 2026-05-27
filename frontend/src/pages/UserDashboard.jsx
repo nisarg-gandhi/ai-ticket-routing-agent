@@ -4,17 +4,11 @@ import { useAuth } from '../contexts/AuthContext';
 import ticketService from '../services/ticketService';
 import Badge from '../components/Badge';
 import { Plus, Inbox, AlertCircle, ChevronRight } from 'lucide-react';
+import { formatDate } from '../utils/formatDate';
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
-function formatDate(dateStr) {
-  if (!dateStr) return '—';
-  return new Date(dateStr).toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
-}
+// formatDate is imported from src/utils/formatDate.js
 
 // ─── Skeleton ───────────────────────────────────────────────────────────────
 

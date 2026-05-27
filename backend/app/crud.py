@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, func, cast, Date
 from typing import Optional
+from datetime import datetime, timezone
 from . import models, schemas, ai_service
 
 # Function to get all tickets, with optional skip and limit for pagination
@@ -57,6 +58,19 @@ def update_ticket_status(db: Session, ticket_id: int, status: str, user_id: int,
     db_ticket = get_ticket(db, ticket_id, user_id, role=role)
     if db_ticket:
         db_ticket.status = status
+
+        # Set or clear resolved_at
+        if status == "resolved":
+            db_ticket.resolved_at = datetime.now(timezone.utc)
+        else:
+            db_ticket.resolved_at = None
+
+        # Set or clear closed_at
+        if status == "closed":
+            db_ticket.closed_at = datetime.now(timezone.utc)
+        else:
+            db_ticket.closed_at = None
+
         db.commit()
         db.refresh(db_ticket)
     return db_ticket

@@ -6,6 +6,7 @@ import TicketMetadata from '../components/TicketMetadata';
 import DraftResponseBox from '../components/DraftResponseBox';
 import Badge from '../components/Badge';
 import StatusActions from '../components/StatusActions';
+import { formatDate } from '../utils/formatDate';
 
 export default function TicketDetail() {
   const { id } = useParams();
@@ -138,7 +139,7 @@ export default function TicketDetail() {
                 </div>
                 <div className="flex items-center">
                   <Clock className="w-4 h-4 mr-1.5" />
-                  {new Date(ticket.created_at).toLocaleString()}
+                  {formatDate(ticket.created_at)}
                 </div>
               </div>
             </div>
@@ -167,7 +168,7 @@ export default function TicketDetail() {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-slate-500">Created</span>
-                  <span className="font-medium text-slate-900">{new Date(ticket.created_at).toLocaleDateString()}</span>
+                  <span className="font-medium text-slate-900">{formatDate(ticket.created_at)}</span>
                 </div>
              </div>
           </div>

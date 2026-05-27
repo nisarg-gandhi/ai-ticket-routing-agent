@@ -14,7 +14,7 @@ class TicketUpdateStatus(BaseModel):
     @field_validator('status')
     @classmethod
     def validate_status(cls, v: str) -> str:
-        allowed = {'open', 'in_progress', 'resolved'}
+        allowed = {'open', 'in_progress', 'resolved', 'closed'}
         if v.lower() not in allowed:
             raise ValueError(f'Status must be one of {allowed}')
         return v.lower()
@@ -36,6 +36,9 @@ class Ticket(BaseModel):
     needs_review: Optional[bool] = None
     ai_draft_response: Optional[str] = None
     created_at: datetime
+    updated_at: Optional[datetime] = None
+    resolved_at: Optional[datetime] = None
+    closed_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True  # Allows Pydantic to read data from SQLAlchemy ORM models
