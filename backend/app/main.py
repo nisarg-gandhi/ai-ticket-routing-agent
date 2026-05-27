@@ -28,7 +28,9 @@ app.add_middleware(
 )
 
 # Include the routers
-app.include_router(tickets.router, dependencies=[Depends(get_current_user)])
+# Note: tickets router manages its own per-route auth so the SSE endpoint
+# can accept the JWT as a query param (EventSource cannot send custom headers).
+app.include_router(tickets.router)
 app.include_router(analytics.router, dependencies=[Depends(get_current_user)])
 app.include_router(customers.router, dependencies=[Depends(get_current_user)])
 app.include_router(auth.router)

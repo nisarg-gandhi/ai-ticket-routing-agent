@@ -32,6 +32,33 @@ export default function TicketDetail() {
     };
 
     fetchTicket();
+
+    // Open a Server-Sent Events connection for real-time status updates.
+    // EventSource cannot send custom headers, so we pass the JWT as a query param.
+    const token = localStorage.getItem('token');
+    const apiBase = import.meta.env.VITE_API_URL || '';
+    const sseUrl = `${apiBase}/tickets/${id}/stream?token=${token}`;
+    const es = new EventSource(sseUrl);
+
+    es.onmessage = (event) => {
+      // Ignore heartbeat pings
+      if (event.data === 'ping') return;
+      try {
+        const updated = JSON.parse(event.data);
+        // Only apply external updates — the current admin's own actions are
+        // already handled optimistically via handleUpdateStatus.
+        setTicket((prev) => (prev ? updated : prev));
+      } catch {
+        // Silently ignore malformed messages
+      }
+    };
+
+    es.onerror = () => {
+      // Browser will auto-reconnect; no need to handle manually
+    };
+
+    // Close the SSE connection when the component unmounts or the ticket id changes
+    return () => es.close();
   }, [id]);
 
   const getStatusVariant = (status) => {

@@ -19,7 +19,7 @@ export default function Dashboard() {
       return;
     }
 
-    const fetchAnalytics = async (silent = false) => {
+    const fetchAnalytics = async () => {
       try {
         const [overviewData, chartsData] = await Promise.all([
           analyticsService.getOverview(),
@@ -30,17 +30,11 @@ export default function Dashboard() {
       } catch (error) {
         console.error('Error loading analytics:', error);
       } finally {
-        if (!silent) setLoading(false);
+        setLoading(false);
       }
     };
 
-    // Initial load — show skeleton
-    fetchAnalytics(false);
-
-    // Poll every 10 s — silent, no skeleton flash
-    const intervalId = setInterval(() => fetchAnalytics(true), 10000);
-
-    return () => clearInterval(intervalId);
+    fetchAnalytics();
   }, [user]);
 
   const stats = overview ? [

@@ -26,12 +26,10 @@ export default function Tickets() {
   const activeTab = searchParams.get('tab') || 'all';
 
   useEffect(() => {
-    const fetchTickets = async (silent = false) => {
+    const fetchTickets = async () => {
       try {
-        if (!silent) {
-          setIsLoading(true);
-          setError(null);
-        }
+        setIsLoading(true);
+        setError(null);
         let data;
         if (activeTab === 'needs_review') {
           data = await ticketService.getNeedsReviewTickets();
@@ -40,19 +38,13 @@ export default function Tickets() {
         }
         setTickets(data);
       } catch (err) {
-        if (!silent) setError(err.message);
+        setError(err.message);
       } finally {
-        if (!silent) setIsLoading(false);
+        setIsLoading(false);
       }
     };
 
-    // Initial load — show spinner
-    fetchTickets(false);
-
-    // Poll every 10 s — silent, no spinner
-    const intervalId = setInterval(() => fetchTickets(true), 10000);
-
-    return () => clearInterval(intervalId);
+    fetchTickets();
   }, [filters.search, filters.status, filters.category, filters.urgency, activeTab]);
 
   const updateSearchParams = useCallback((newFilters) => {

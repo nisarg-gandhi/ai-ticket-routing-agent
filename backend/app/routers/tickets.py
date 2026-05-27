@@ -1,18 +1,25 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from typing import List, Optional
 import csv
 import io
+import asyncio
+import jwt
+from jwt.exceptions import InvalidTokenError
 
 from .. import schemas, crud, models
 from ..database import get_db
 from ..dependencies import get_current_user, require_role
+from ..services import auth_service
 
 router = APIRouter(
     prefix="/tickets",
     tags=["tickets"],
 )
+
+# Module-level registry: ticket_id -> list of asyncio.Queue instances (one per SSE connection)
+ticket_subscribers: dict[int, list[asyncio.Queue]] = {}
 
 @router.post("/", response_model=schemas.Ticket)
 def create_ticket(ticket: schemas.TicketCreate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
@@ -132,9 +139,88 @@ def read_ticket(ticket_id: int, db: Session = Depends(get_db), current_user: mod
 @router.patch("/{ticket_id}/status", response_model=schemas.Ticket)
 def update_ticket_status(ticket_id: int, status_update: schemas.TicketUpdateStatus, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
     """
-    Update the status of a specific ticket.
+    Update the status of a specific ticket and push the updated ticket to all active SSE subscribers.
     """
     db_ticket = crud.update_ticket_status(db, ticket_id=ticket_id, status=status_update.status, user_id=current_user.id, role=current_user.role)
     if db_ticket is None:
         raise HTTPException(status_code=404, detail="Ticket not found")
+
+    # Push updated ticket data to all SSE subscribers for this ticket
+    queues = ticket_subscribers.get(ticket_id, [])
+    if queues:
+        ticket_schema = schemas.Ticket.model_validate(db_ticket)
+        payload = ticket_schema.model_dump_json()
+        for q in list(queues):
+            try:
+                q.put_nowait(payload)
+            except asyncio.QueueFull:
+                pass  # Drop if the consumer is too slow
+
     return db_ticket
+
+
+@router.get("/{ticket_id}/stream")
+async def stream_ticket(
+    ticket_id: int,
+    token: str = Query(..., description="JWT access token (EventSource cannot send custom headers)"),
+    db: Session = Depends(get_db),
+):
+    """
+    SSE endpoint for real-time ticket status updates.
+    Clients connect here after a normal fetch; updates are pushed whenever the ticket status changes.
+    A heartbeat ping is sent every 15 seconds to keep the connection alive.
+    """
+    # --- Validate the JWT token manually (EventSource cannot send Authorization header) ---
+    credentials_exception = HTTPException(
+        status_code=401,
+        detail="Could not validate credentials",
+    )
+    try:
+        payload = jwt.decode(token, auth_service.SECRET_KEY, algorithms=[auth_service.ALGORITHM])
+        email: str = payload.get("sub")
+        if email is None:
+            raise credentials_exception
+    except InvalidTokenError:
+        raise credentials_exception
+
+    user = db.query(models.User).filter(models.User.email == email).first()
+    if user is None:
+        raise credentials_exception
+
+    # Verify the ticket exists and the user is allowed to see it
+    db_ticket = crud.get_ticket(db, ticket_id=ticket_id, user_id=user.id, role=user.role)
+    if db_ticket is None:
+        raise HTTPException(status_code=404, detail="Ticket not found")
+
+    # Register a per-connection queue
+    queue: asyncio.Queue = asyncio.Queue(maxsize=50)
+    ticket_subscribers.setdefault(ticket_id, []).append(queue)
+
+    async def event_generator():
+        try:
+            while True:
+                try:
+                    # Wait up to 15 seconds for a queued update, then send a heartbeat
+                    data = await asyncio.wait_for(queue.get(), timeout=15.0)
+                    yield f"data: {data}\n\n"
+                except asyncio.TimeoutError:
+                    # Heartbeat to keep the connection alive through proxies / load balancers
+                    yield "data: ping\n\n"
+        except asyncio.CancelledError:
+            pass
+        finally:
+            # Clean up: remove this queue from the subscriber list
+            subs = ticket_subscribers.get(ticket_id, [])
+            if queue in subs:
+                subs.remove(queue)
+            if not subs:
+                ticket_subscribers.pop(ticket_id, None)
+
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "X-Accel-Buffering": "no",  # Disable Nginx buffering if behind a proxy
+        },
+    )
