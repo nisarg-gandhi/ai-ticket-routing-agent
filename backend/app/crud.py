@@ -1,7 +1,8 @@
-import json
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, func, cast, Date
-from typing import Optional
+from sqlalchemy.dialects.postgresql import ARRAY as PG_ARRAY
+from sqlalchemy import String
+from typing import Optional, List
 from datetime import datetime, timezone
 from . import models, schemas, ai_service
 from .state import ticket_subscribers
@@ -77,14 +78,12 @@ async def update_ticket_status(db: Session, ticket_id: int, status: str, user_id
         db.refresh(db_ticket)
 
         # Notify all active SSE subscribers for this ticket
+        # Send the full ticket object so the frontend never has to guess
+        # which fields are present in the payload (avoids blank-field bugs
+        # caused by partial-delta replacement).
         if ticket_id in ticket_subscribers:
-            ticket_data = json.dumps({
-                "id": db_ticket.id,
-                "status": db_ticket.status,
-                "updated_at": db_ticket.updated_at.isoformat() if db_ticket.updated_at else None,
-                "resolved_at": db_ticket.resolved_at.isoformat() if db_ticket.resolved_at else None,
-                "closed_at": db_ticket.closed_at.isoformat() if db_ticket.closed_at else None,
-            })
+            ticket_schema = schemas.Ticket.model_validate(db_ticket)
+            ticket_data = ticket_schema.model_dump_json()
             for queue in list(ticket_subscribers[ticket_id]):
                 await queue.put(ticket_data)
 
@@ -106,8 +105,12 @@ def create_ticket(db: Session, ticket: schemas.TicketCreate, user_id: int, user:
     )
     
     confidence = classification.get("confidence", 0.0)
+    category = classification.get("category")
     
-    # Step 3: Create the ticket object with the AI metadata
+    # Step 3: Suggest an agent based on the ticket category
+    suggested_agent = suggest_agent(db, category=category)
+    
+    # Step 4: Create the ticket object with the AI metadata
     db_ticket = models.Ticket(
         user_id=user_id,
         customer_name=user.name,
@@ -115,20 +118,142 @@ def create_ticket(db: Session, ticket: schemas.TicketCreate, user_id: int, user:
         subject=ticket.subject,
         message=ticket.message,
         status="open", # Default status when a ticket is created
-        category=classification.get("category"),
+        category=category,
         urgency=classification.get("urgency"),
         sentiment=classification.get("sentiment"),
         confidence=confidence,
         routing_reasoning=classification.get("reasoning"),
         needs_review=(confidence < 0.70),
-        ai_draft_response=draft_response
+        ai_draft_response=draft_response,
+        # Store AI's agent suggestion (read-only from API, used for feedback loops)
+        ai_suggested_agent_id=suggested_agent.id if suggested_agent else None,
     )
     db.add(db_ticket)
     db.commit()
     db.refresh(db_ticket)
     return db_ticket
 
-# Analytics functions
+# ─── Agent Assignment Functions ────────────────────────────────────────────────
+
+def suggest_agent(db: Session, category: Optional[str]) -> Optional[models.User]:
+    """
+    Find the best available agent for a given ticket category.
+
+    Queries agents whose `categories` array contains the ticket category,
+    then orders by open ticket count ascending (least-loaded agent first).
+    Returns the top result, or None if no match is found.
+    """
+    if not category:
+        return None
+
+    # Subquery: count open/in_progress tickets assigned to each agent
+    open_count_subq = (
+        db.query(
+            models.Ticket.assigned_agent_id,
+            func.count(models.Ticket.id).label("open_count"),
+        )
+        .filter(models.Ticket.status.in_(["open", "in_progress"]))
+        .filter(models.Ticket.assigned_agent_id.isnot(None))
+        .group_by(models.Ticket.assigned_agent_id)
+        .subquery()
+    )
+
+    # Query agents that handle this category, ranked by workload
+    agent = (
+        db.query(models.User)
+        .outerjoin(open_count_subq, models.User.id == open_count_subq.c.assigned_agent_id)
+        .filter(models.User.role == "agent")
+        # PostgreSQL array containment: categories @> ARRAY[category]
+        .filter(models.User.categories.contains([category]))
+        .order_by(func.coalesce(open_count_subq.c.open_count, 0).asc())
+        .first()
+    )
+    return agent
+
+
+def assign_agent(
+    db: Session,
+    ticket_id: int,
+    agent_id: int,
+    reason: str,
+) -> Optional[models.Ticket]:
+    """
+    Assign an agent to a ticket.
+
+    Sets assigned_agent_id, assigned_at, and assignment_reason.
+    Returns the updated ticket or None if not found.
+    """
+    db_ticket = db.query(models.Ticket).filter(models.Ticket.id == ticket_id).first()
+    if not db_ticket:
+        return None
+
+    db_ticket.assigned_agent_id = agent_id
+    db_ticket.assigned_at = datetime.now(timezone.utc)
+    db_ticket.assignment_reason = reason
+
+    db.commit()
+    db.refresh(db_ticket)
+    return db_ticket
+
+
+def get_agents(db: Session) -> List[dict]:
+    """
+    Return all users with role='agent', each annotated with their
+    current open ticket count (open or in_progress tickets assigned to them).
+    """
+    # Subquery for open ticket counts per agent
+    open_count_subq = (
+        db.query(
+            models.Ticket.assigned_agent_id,
+            func.count(models.Ticket.id).label("open_count"),
+        )
+        .filter(models.Ticket.status.in_(["open", "in_progress"]))
+        .filter(models.Ticket.assigned_agent_id.isnot(None))
+        .group_by(models.Ticket.assigned_agent_id)
+        .subquery()
+    )
+
+    rows = (
+        db.query(
+            models.User,
+            func.coalesce(open_count_subq.c.open_count, 0).label("open_ticket_count"),
+        )
+        .outerjoin(open_count_subq, models.User.id == open_count_subq.c.assigned_agent_id)
+        .filter(models.User.role == "agent")
+        .order_by(models.User.name.asc())
+        .all()
+    )
+
+    result = []
+    for user, open_ticket_count in rows:
+        result.append({
+            "id": user.id,
+            "name": user.name,
+            "email": user.email,
+            "categories": user.categories or [],
+            "open_ticket_count": open_ticket_count,
+        })
+    return result
+
+
+def get_my_queue(db: Session, agent_id: int) -> List[models.Ticket]:
+    """
+    Return all open/in_progress tickets assigned to a specific agent.
+    Used for the agent's My Queue view.
+    """
+    return (
+        db.query(models.Ticket)
+        .filter(
+            models.Ticket.assigned_agent_id == agent_id,
+            models.Ticket.status.in_(["open", "in_progress"]),
+        )
+        .order_by(models.Ticket.id.desc())
+        .all()
+    )
+
+
+# ─── Analytics functions ───────────────────────────────────────────────────────
+
 def get_analytics_overview(db: Session, user_id: int, role: str = "user"):
     base_query = db.query(models.Ticket)
     

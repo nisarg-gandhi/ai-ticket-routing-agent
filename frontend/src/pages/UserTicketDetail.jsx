@@ -153,7 +153,10 @@ export default function UserTicketDetail() {
       if (event.data === 'ping') return;
       try {
         const updated = JSON.parse(event.data);
-        setTicket(updated);
+        // Merge into existing ticket state so partial delta payloads
+        // (which only carry changed fields like `status`, `updated_at`, etc.)
+        // never wipe fields that were not included in the SSE message.
+        setTicket((prev) => prev ? { ...prev, ...updated } : updated);
       } catch {
         // Silently ignore malformed messages
       }

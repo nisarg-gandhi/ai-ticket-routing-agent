@@ -1,12 +1,203 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Clock, User, Mail, AlertCircle, RefreshCcw, CheckCircle } from 'lucide-react';
+import {
+  ArrowLeft, Clock, User, Mail, AlertCircle, RefreshCcw,
+  CheckCircle, Sparkles, UserCheck, ChevronDown, UserPlus,
+} from 'lucide-react';
 import ticketService from '../services/ticketService';
+import agentService from '../services/agentService';
 import TicketMetadata from '../components/TicketMetadata';
 import DraftResponseBox from '../components/DraftResponseBox';
 import Badge from '../components/Badge';
 import StatusActions from '../components/StatusActions';
 import { formatDate } from '../utils/formatDate';
+
+// ─── Assignment reason badge ──────────────────────────────────────────────────
+
+function AssignmentReasonBadge({ reason }) {
+  if (!reason) return null;
+  const map = {
+    ai_suggested: { label: 'AI Suggested', variant: 'indigo' },
+    manual: { label: 'Manual', variant: 'gray' },
+    reassigned: { label: 'Reassigned', variant: 'yellow' },
+  };
+  const { label, variant } = map[reason] || { label: reason, variant: 'gray' };
+  return <Badge label={label} variant={variant} />;
+}
+
+// ─── Assigned Agent Panel ─────────────────────────────────────────────────────
+
+function AssignedAgentPanel({ ticket, onAssigned }) {
+  const [agents, setAgents] = useState([]);
+  const [selectedAgentId, setSelectedAgentId] = useState('');
+  const [isAssigning, setIsAssigning] = useState(false);
+  const [loadingAgents, setLoadingAgents] = useState(true);
+
+  // Load agents list once
+  useEffect(() => {
+    agentService.getAgents()
+      .then(setAgents)
+      .catch(console.error)
+      .finally(() => setLoadingAgents(false));
+  }, []);
+
+  // Filter agents to those who handle this ticket's category (client-side)
+  const matchingAgents = ticket.category
+    ? agents.filter((a) => a.categories?.includes(ticket.category))
+    : agents;
+
+  // Fall back to all agents if none match the category
+  const dropdownAgents = matchingAgents.length > 0 ? matchingAgents : agents;
+
+  const suggestedAgent = ticket.ai_suggested_agent_id
+    ? agents.find((a) => a.id === ticket.ai_suggested_agent_id)
+    : null;
+
+  const handleAcceptSuggestion = async () => {
+    if (!suggestedAgent) return;
+    setIsAssigning(true);
+    try {
+      const updated = await ticketService.assignAgent(ticket.id, suggestedAgent.id, 'ai_suggested');
+      onAssigned(updated);
+    } catch (err) {
+      window.dispatchEvent(new CustomEvent('toast:show', {
+        detail: { message: `Assignment failed: ${err.message}`, type: 'error' },
+      }));
+    } finally {
+      setIsAssigning(false);
+    }
+  };
+
+  const handleManualAssign = async () => {
+    if (!selectedAgentId) return;
+    setIsAssigning(true);
+    const reason = ticket.assigned_agent_id ? 'reassigned' : 'manual';
+    try {
+      const updated = await ticketService.assignAgent(ticket.id, Number(selectedAgentId), reason);
+      onAssigned(updated);
+      setSelectedAgentId('');
+    } catch (err) {
+      window.dispatchEvent(new CustomEvent('toast:show', {
+        detail: { message: `Assignment failed: ${err.message}`, type: 'error' },
+      }));
+    } finally {
+      setIsAssigning(false);
+    }
+  };
+
+  return (
+    <div className="bg-white rounded-2xl border border-slate-200/80 p-6 space-y-5">
+      <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider">
+        Assigned Agent
+      </h3>
+
+      {/* ── Current assignee ── */}
+      {ticket.assigned_agent ? (
+        <div className="flex items-start gap-3 p-3 bg-emerald-50 border border-emerald-200/80 rounded-xl">
+          <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center flex-shrink-0">
+            <UserCheck className="w-4 h-4 text-white" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-semibold text-slate-900 truncate">
+              {ticket.assigned_agent.name}
+            </p>
+            <p className="text-xs text-slate-500 truncate">{ticket.assigned_agent.email}</p>
+            {ticket.assignment_reason && (
+              <div className="mt-1.5">
+                <AssignmentReasonBadge reason={ticket.assignment_reason} />
+              </div>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="flex items-center gap-2 text-sm text-slate-400 italic">
+          <User className="w-4 h-4" />
+          No agent assigned yet
+        </div>
+      )}
+
+      {/* ── AI Suggestion banner ── */}
+      {suggestedAgent && !ticket.assigned_agent_id && (
+        <div className="p-3 bg-indigo-50 border border-indigo-200/80 rounded-xl space-y-2">
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-indigo-700">
+            <Sparkles className="w-3.5 h-3.5" />
+            AI Suggestion
+          </div>
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-slate-900 truncate">{suggestedAgent.name}</p>
+              <p className="text-xs text-slate-500 truncate">{suggestedAgent.email}</p>
+            </div>
+            <button
+              id="accept-ai-suggestion-btn"
+              onClick={handleAcceptSuggestion}
+              disabled={isAssigning}
+              className="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 rounded-lg shadow-sm shadow-indigo-500/20 disabled:opacity-50 transition-all"
+            >
+              {isAssigning ? (
+                <RefreshCcw className="w-3 h-3 animate-spin" />
+              ) : (
+                <CheckCircle className="w-3 h-3" />
+              )}
+              Accept
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ── Manual assignment dropdown ── */}
+      <div className="space-y-2 pt-1 border-t border-slate-100">
+        <p className="text-xs font-medium text-slate-500">
+          {ticket.assigned_agent_id ? 'Reassign to' : 'Assign to'}{' '}
+          {matchingAgents.length > 0 && ticket.category ? (
+            <span className="text-indigo-600 font-semibold">
+              {matchingAgents.length} agent{matchingAgents.length !== 1 ? 's' : ''} handling {ticket.category}
+            </span>
+          ) : (
+            <span>an agent</span>
+          )}
+        </p>
+
+        {loadingAgents ? (
+          <div className="h-9 bg-slate-100 animate-pulse rounded-lg" />
+        ) : (
+          <div className="relative">
+            <select
+              id="agent-assignment-select"
+              value={selectedAgentId}
+              onChange={(e) => setSelectedAgentId(e.target.value)}
+              className="w-full appearance-none pl-3 pr-8 py-2 text-sm bg-white border border-slate-200 rounded-lg text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all"
+            >
+              <option value="">Select agent…</option>
+              {dropdownAgents.map((agent) => (
+                <option key={agent.id} value={agent.id}>
+                  {agent.name} ({agent.open_ticket_count} open)
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+          </div>
+        )}
+
+        <button
+          id="assign-agent-btn"
+          onClick={handleManualAssign}
+          disabled={!selectedAgentId || isAssigning}
+          className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 rounded-lg shadow-sm shadow-indigo-500/20 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-[0.98]"
+        >
+          {isAssigning ? (
+            <RefreshCcw className="w-3.5 h-3.5 animate-spin" />
+          ) : (
+            <UserPlus className="w-3.5 h-3.5" />
+          )}
+          {ticket.assigned_agent_id ? 'Reassign' : 'Assign Agent'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Main component ───────────────────────────────────────────────────────────
 
 export default function TicketDetail() {
   const { id } = useParams();
@@ -33,7 +224,7 @@ export default function TicketDetail() {
 
     fetchTicket();
 
-    // Open a Server-Sent Events connection for real-time status updates.
+    // Open a Server-Sent Events connection for real-time ticket updates.
     // EventSource cannot send custom headers, so we pass the JWT as a query param.
     const token = localStorage.getItem('token');
     const apiBase = import.meta.env.VITE_API_URL || '';
@@ -45,9 +236,19 @@ export default function TicketDetail() {
       if (event.data === 'ping') return;
       try {
         const updated = JSON.parse(event.data);
-        // Only apply external updates — the current admin's own actions are
-        // already handled optimistically via handleUpdateStatus.
-        setTicket((prev) => (prev ? updated : prev));
+
+        if (updated._event === 'ticket_assigned') {
+          // Spread-merge so we never wipe existing fields
+          setTicket((prev) => (prev ? { ...prev, ...updated } : updated));
+
+          // Show a subtle toast for assignment updates from other admin sessions
+          window.dispatchEvent(new CustomEvent('toast:show', {
+            detail: { message: 'Ticket assignment updated', type: 'info' },
+          }));
+        } else {
+          // Status update or other event — apply same spread-merge pattern
+          setTicket((prev) => (prev ? { ...prev, ...updated } : updated));
+        }
       } catch {
         // Silently ignore malformed messages
       }
@@ -77,7 +278,7 @@ export default function TicketDetail() {
     setIsUpdatingStatus(newStatus);
     try {
       const updatedTicket = await ticketService.updateTicketStatus(ticket.id, newStatus);
-      setTicket(updatedTicket);
+      setTicket((prev) => ({ ...prev, ...updatedTicket }));
       
       // Show success toast
       setToastMessage(`Ticket marked as ${newStatus.replace('_', ' ')}`);
@@ -88,6 +289,14 @@ export default function TicketDetail() {
       setIsUpdatingStatus(null);
     }
   };
+
+  // Called by AssignedAgentPanel when assignment succeeds
+  const handleAssigned = useCallback((updatedTicket) => {
+    setTicket((prev) => ({ ...prev, ...updatedTicket }));
+    window.dispatchEvent(new CustomEvent('toast:show', {
+      detail: { message: 'Agent assigned successfully', type: 'success' },
+    }));
+  }, []);
 
   if (isLoading) {
     return (
@@ -115,8 +324,6 @@ export default function TicketDetail() {
   }
 
   if (!ticket) return null;
-
-  const isResolved = ticket?.status?.toLowerCase() === 'resolved';
 
   return (
     <div className="max-w-5xl mx-auto pb-10 relative">
@@ -183,21 +390,31 @@ export default function TicketDetail() {
         </div>
 
         {/* Sidebar (Right Col) */}
-        <div className="lg:col-span-1">
+        <div className="lg:col-span-1 space-y-6">
           <TicketMetadata ticket={ticket} />
-          
+
+          {/* Agent Assignment Panel (admin-only UI; roles enforced by API) */}
+          <AssignedAgentPanel ticket={ticket} onAssigned={handleAssigned} />
+
+          {/* Ticket Info */}
           <div className="bg-white rounded-2xl border border-slate-200/80 p-6">
-             <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider mb-4">Ticket Info</h3>
-             <div className="space-y-4">
-                <div className="flex justify-between text-sm">
-                  <span className="text-slate-500">Ticket ID</span>
+            <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider mb-4">Ticket Info</h3>
+            <div className="space-y-4">
+              <div className="flex justify-between text-sm">
+                <span className="text-slate-500">Ticket ID</span>
                 <span className="font-mono text-sm font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-lg">#{ticket.id}</span>
-                </div>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-slate-500">Created</span>
+                <span className="font-medium text-slate-900">{formatDate(ticket.created_at)}</span>
+              </div>
+              {ticket.assigned_at && (
                 <div className="flex justify-between text-sm">
-                  <span className="text-slate-500">Created</span>
-                  <span className="font-medium text-slate-900">{formatDate(ticket.created_at)}</span>
+                  <span className="text-slate-500">Assigned</span>
+                  <span className="font-medium text-slate-900">{formatDate(ticket.assigned_at)}</span>
                 </div>
-             </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

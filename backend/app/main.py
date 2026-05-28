@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from .database import engine, Base
-from .routers import tickets, analytics, customers, auth
+from .routers import tickets, analytics, customers, auth, agents
 from .dependencies import get_current_user
 import os
 # Create the database tables
@@ -31,6 +31,7 @@ app.add_middleware(
 # Note: tickets router manages its own per-route auth so the SSE endpoint
 # can accept the JWT as a query param (EventSource cannot send custom headers).
 app.include_router(tickets.router)
+app.include_router(agents.router, dependencies=[Depends(get_current_user)])
 app.include_router(analytics.router, dependencies=[Depends(get_current_user)])
 app.include_router(customers.router, dependencies=[Depends(get_current_user)])
 app.include_router(auth.router)

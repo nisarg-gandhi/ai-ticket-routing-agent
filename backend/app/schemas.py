@@ -1,6 +1,30 @@
 from pydantic import BaseModel, EmailStr, field_validator
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
+
+# ─── Agent schemas ────────────────────────────────────────────────────────────
+
+class AgentBrief(BaseModel):
+    """Minimal agent info embedded inside a Ticket response."""
+    id: int
+    name: str
+    email: EmailStr
+
+    class Config:
+        from_attributes = True
+
+class AgentWithLoad(BaseModel):
+    """Agent info including category specializations and current workload."""
+    id: int
+    name: str
+    email: EmailStr
+    categories: List[str] = []
+    open_ticket_count: int = 0
+
+    class Config:
+        from_attributes = True
+
+# ─── Ticket schemas ───────────────────────────────────────────────────────────
 
 # Schema for creating a ticket (what we expect from the client)
 class TicketCreate(BaseModel):
@@ -19,6 +43,18 @@ class TicketUpdateStatus(BaseModel):
             raise ValueError(f'Status must be one of {allowed}')
         return v.lower()
 
+# Schema for assigning an agent to a ticket (admin only)
+class TicketAssign(BaseModel):
+    agent_id: int
+    reason: str
+
+    @field_validator('reason')
+    @classmethod
+    def validate_reason(cls, v: str) -> str:
+        allowed = {'ai_suggested', 'manual', 'reassigned'}
+        if v.lower() not in allowed:
+            raise ValueError(f'Reason must be one of {allowed}')
+        return v.lower()
 
 # Schema for returning a ticket (what we send back to the client)
 class Ticket(BaseModel):
@@ -40,10 +76,19 @@ class Ticket(BaseModel):
     resolved_at: Optional[datetime] = None
     closed_at: Optional[datetime] = None
 
+    # Assignment fields
+    assigned_agent_id: Optional[int] = None
+    assigned_at: Optional[datetime] = None
+    assignment_reason: Optional[str] = None
+    ai_suggested_agent_id: Optional[int] = None
+    # Nested agent object (populated when a relationship is loaded)
+    assigned_agent: Optional[AgentBrief] = None
+
     class Config:
         from_attributes = True  # Allows Pydantic to read data from SQLAlchemy ORM models
 
-# Auth Schemas
+# ─── Auth schemas ─────────────────────────────────────────────────────────────
+
 class UserCreate(BaseModel):
     name: str
     email: EmailStr
@@ -59,6 +104,7 @@ class User(BaseModel):
     name: str
     email: EmailStr
     role: str
+    categories: List[str] = []
     created_at: datetime
 
     class Config:

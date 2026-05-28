@@ -86,6 +86,36 @@ const ticketService = {
   },
 
   /**
+   * Assign an agent to a ticket (admin only)
+   * @param {number|string} ticketId - Ticket ID
+   * @param {number} agentId - Agent user ID
+   * @param {string} reason - Assignment reason: "ai_suggested" | "manual" | "reassigned"
+   * @returns {Promise<Object>} The updated ticket
+   */
+  async assignAgent(ticketId, agentId, reason) {
+    try {
+      const response = await fetchWithAuth(`/tickets/${ticketId}/assign`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ agent_id: agentId, reason }),
+      });
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || 'Failed to assign agent');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error(`Error assigning agent to ticket ${ticketId}:`, error);
+      if (error.name === 'TypeError' && error.message === 'Failed to fetch') {
+        throw new Error('Unable to connect to server. Please ensure the backend is running.');
+      }
+      throw error;
+    }
+  },
+
+  /**
    * Fetch all tickets
    * @param {Object} filters - Optional filters { search, status, category, urgency }
    * @returns {Promise<Array>} List of tickets
@@ -135,7 +165,27 @@ const ticketService = {
       }
       throw error;
     }
-  }
+  },
+
+  /**
+   * Fetch tickets assigned to the currently logged-in agent (My Queue)
+   * @returns {Promise<Array>} List of assigned open/in_progress tickets
+   */
+  async getMyQueue() {
+    try {
+      const response = await fetchWithAuth('/tickets/my-queue');
+      if (!response.ok) {
+        throw new Error('Failed to fetch queue');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching my queue:', error);
+      if (error.name === 'TypeError' && error.message === 'Failed to fetch') {
+        throw new Error('Unable to connect to server. Please ensure the backend is running.');
+      }
+      throw error;
+    }
+  },
 };
 
 export default ticketService;

@@ -5,6 +5,7 @@ from typing import List, Optional
 import csv
 import io
 import asyncio
+import json
 import jwt
 from jwt.exceptions import InvalidTokenError
 
@@ -124,6 +125,16 @@ def read_needs_review_tickets(
     )
     return tickets
 
+@router.get("/my-queue", response_model=List[schemas.Ticket])
+def read_my_queue(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(require_role("admin", "agent"))
+):
+    """
+    Return open/in_progress tickets assigned to the currently logged-in agent.
+    """
+    return crud.get_my_queue(db, agent_id=current_user.id)
+
 @router.get("/{ticket_id}", response_model=schemas.Ticket)
 def read_ticket(ticket_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
     """
@@ -142,6 +153,45 @@ async def update_ticket_status(ticket_id: int, status_update: schemas.TicketUpda
     db_ticket = await crud.update_ticket_status(db, ticket_id=ticket_id, status=status_update.status, user_id=current_user.id, role=current_user.role)
     if db_ticket is None:
         raise HTTPException(status_code=404, detail="Ticket not found")
+
+    return db_ticket
+
+@router.patch("/{ticket_id}/assign", response_model=schemas.Ticket)
+async def assign_ticket(
+    ticket_id: int,
+    assignment: schemas.TicketAssign,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(require_role("admin")),
+):
+    """
+    Assign an agent to a ticket (admin only).
+    Accepts { agent_id, reason } and emits a ticket_assigned SSE event to all subscribers.
+    """
+    # Verify the target agent exists and has the agent role
+    agent = db.query(models.User).filter(
+        models.User.id == assignment.agent_id,
+        models.User.role == "agent"
+    ).first()
+    if not agent:
+        raise HTTPException(status_code=404, detail="Agent not found")
+
+    db_ticket = crud.assign_agent(
+        db,
+        ticket_id=ticket_id,
+        agent_id=assignment.agent_id,
+        reason=assignment.reason,
+    )
+    if db_ticket is None:
+        raise HTTPException(status_code=404, detail="Ticket not found")
+
+    # Push a ticket_assigned SSE event to all active subscribers for this ticket.
+    # The _event field lets the frontend branch without changing the SSE wire format.
+    if ticket_id in ticket_subscribers:
+        ticket_schema = schemas.Ticket.model_validate(db_ticket)
+        payload = ticket_schema.model_dump()
+        payload["_event"] = "ticket_assigned"
+        for queue in list(ticket_subscribers[ticket_id]):
+            await queue.put(json.dumps(payload, default=str))
 
     return db_ticket
 
