@@ -1,7 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, func, cast, Date
-from sqlalchemy.dialects.postgresql import ARRAY as PG_ARRAY
-from sqlalchemy import String
+from sqlalchemy.dialects.postgresql import ARRAY, TEXT
 from typing import Optional, List
 from datetime import datetime, timezone
 from . import models, schemas, ai_service
@@ -163,8 +162,9 @@ def suggest_agent(db: Session, category: Optional[str]) -> Optional[models.User]
         db.query(models.User)
         .outerjoin(open_count_subq, models.User.id == open_count_subq.c.assigned_agent_id)
         .filter(models.User.role == "agent")
-        # PostgreSQL array containment: categories @> ARRAY[category]
-        .filter(models.User.categories.contains([category]))
+        # PostgreSQL array containment: categories @> ARRAY[category]::text[]
+        # Explicit cast to TEXT[] is required so PostgreSQL can resolve the @> operator.
+        .filter(models.User.categories.contains(cast([category], ARRAY(TEXT))))
         .order_by(func.coalesce(open_count_subq.c.open_count, 0).asc())
         .first()
     )
