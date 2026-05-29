@@ -1,7 +1,7 @@
 import Badge from './Badge';
 import { AlertCircle } from 'lucide-react';
 
-export default function TicketMetadata({ ticket }) {
+export default function TicketMetadata({ ticket, role }) {
   const getUrgencyVariant = (urgency) => {
     switch (urgency?.toLowerCase()) {
       case 'critical': return 'red';
@@ -49,7 +49,7 @@ export default function TicketMetadata({ ticket }) {
         </div>
       </div>
       
-      {ticket.confidence !== undefined && ticket.confidence !== null && (
+      {role !== 'agent' && ticket.confidence !== undefined && ticket.confidence !== null && (
         <div className="mt-4 pt-4 border-t border-slate-100">
           <div className="flex justify-between text-xs mb-1.5">
             <span className="text-slate-500 font-medium">Confidence Score</span>

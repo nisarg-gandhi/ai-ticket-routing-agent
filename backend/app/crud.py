@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import or_, func, cast, Date
+from sqlalchemy import or_, func, cast, Date, text
 from sqlalchemy.dialects.postgresql import ARRAY, TEXT
 from typing import Optional, List
 from datetime import datetime, timezone
@@ -20,9 +20,19 @@ def get_tickets(
 ):
     query = db.query(models.Ticket)
     
-    # Only filter by user_id for regular users; admins and agents see all tickets
+    # Role-based ticket visibility:
+    # - users: only their own submitted tickets
+    # - agents: only tickets assigned to them OR unassigned (prevents cross-agent data leakage)
+    # - admins: all tickets
     if role == "user":
         query = query.filter(models.Ticket.user_id == user_id)
+    elif role == "agent":
+        query = query.filter(
+            or_(
+                models.Ticket.assigned_agent_id == user_id,
+                models.Ticket.assigned_agent_id.is_(None),
+            )
+        )
     
     if search:
         search_term = f"%{search}%"
@@ -49,9 +59,16 @@ def get_tickets(
 def get_ticket(db: Session, ticket_id: int, user_id: int, role: str = "user"):
     query = db.query(models.Ticket).filter(models.Ticket.id == ticket_id)
     
-    # Only filter by user_id for regular users; admins and agents can access any ticket
+    # Role-based access: users see only their own; agents see own-assigned + unassigned; admins see all
     if role == "user":
         query = query.filter(models.Ticket.user_id == user_id)
+    elif role == "agent":
+        query = query.filter(
+            or_(
+                models.Ticket.assigned_agent_id == user_id,
+                models.Ticket.assigned_agent_id.is_(None),
+            )
+        )
     
     return query.first()
 
@@ -162,9 +179,8 @@ def suggest_agent(db: Session, category: Optional[str]) -> Optional[models.User]
         db.query(models.User)
         .outerjoin(open_count_subq, models.User.id == open_count_subq.c.assigned_agent_id)
         .filter(models.User.role == "agent")
-        # PostgreSQL array containment: categories @> ARRAY[category]::text[]
-        # Explicit cast to TEXT[] is required so PostgreSQL can resolve the @> operator.
-        .filter(models.User.categories.contains(cast([category], ARRAY(TEXT))))
+        # Raw SQL fragment ensures correct ARRAY['...']::TEXT[] syntax for PostgreSQL @> operator.
+        .filter(text("categories @> ARRAY[:cat]::TEXT[]").bindparams(cat=category))
         .order_by(func.coalesce(open_count_subq.c.open_count, 0).asc())
         .first()
     )

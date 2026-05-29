@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
-import { Download, AlertCircle, Inbox, RefreshCcw, UserCheck, ChevronRight, Clock } from 'lucide-react';
+import { Download, AlertCircle, Inbox, RefreshCcw, UserCheck, ChevronRight, Clock, Mailbox } from 'lucide-react';
 import ticketService from '../services/ticketService';
 import TicketTable from '../components/TicketTable';
 import SearchBar from '../components/SearchBar';
@@ -209,6 +209,127 @@ function MyQueue({ currentUserId }) {
   );
 }
 
+// ─── Unassigned (agent-only) ──────────────────────────────────────────────────
+
+function Unassigned() {
+  const navigate = useNavigate();
+  const [tickets, setTickets] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        // Backend already filters to own+unassigned for agents;
+        // additionally filter status=open to show only actionable unassigned tickets.
+        const data = await ticketService.getTickets({ status: 'open' });
+        setTickets(data.filter((t) => !t.assigned_agent_id));
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    load();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 bg-white rounded-2xl border border-slate-200/80">
+        <RefreshCcw className="w-7 h-7 text-indigo-500 animate-spin mb-3" />
+        <p className="text-slate-400 text-sm font-medium">Loading unassigned tickets…</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 bg-white rounded-2xl border border-red-100">
+        <AlertCircle className="w-9 h-9 text-red-400 mb-3" />
+        <p className="text-red-600 font-medium mb-1 text-sm">Failed to load unassigned tickets</p>
+        <p className="text-xs text-red-400 max-w-md text-center">{error}</p>
+      </div>
+    );
+  }
+
+  if (!tickets.length) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 bg-white rounded-2xl border border-slate-200/80">
+        <div className="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center mb-3">
+          <Inbox className="w-7 h-7 text-slate-400" />
+        </div>
+        <p className="text-slate-900 font-semibold text-sm mb-1">No unassigned tickets</p>
+        <p className="text-xs text-slate-400">All open tickets have been assigned to an agent.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden">
+      <div className="px-6 py-3 border-b border-slate-100 flex items-center justify-between">
+        <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+          {tickets.length} unassigned ticket{tickets.length !== 1 ? 's' : ''}
+        </span>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full text-left text-sm whitespace-nowrap">
+          <thead className="bg-slate-50 border-b border-slate-100">
+            <tr>
+              <th className="px-6 py-3 font-semibold text-[11px] uppercase tracking-wider text-slate-400">Customer</th>
+              <th className="px-6 py-3 font-semibold text-[11px] uppercase tracking-wider text-slate-400">Subject</th>
+              <th className="px-6 py-3 font-semibold text-[11px] uppercase tracking-wider text-slate-400">Category</th>
+              <th className="px-6 py-3 font-semibold text-[11px] uppercase tracking-wider text-slate-400">Urgency</th>
+              <th className="px-6 py-3 font-semibold text-[11px] uppercase tracking-wider text-slate-400">Created</th>
+              <th className="px-6 py-3" aria-hidden="true" />
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {tickets.map((ticket) => (
+              <tr
+                key={ticket.id}
+                id={`unassigned-row-${ticket.id}`}
+                onClick={() => navigate(`/admin/tickets/${ticket.id}`)}
+                className="hover:bg-indigo-50/30 transition-colors group cursor-pointer"
+              >
+                <td className="px-6 py-4">
+                  <div>
+                    <div className="font-medium text-slate-900 group-hover:text-indigo-700 transition-colors text-sm">
+                      {ticket.customer_name}
+                    </div>
+                    <div className="text-slate-500 text-xs mt-0.5">{ticket.customer_email}</div>
+                  </div>
+                </td>
+                <td className="px-6 py-4 text-slate-700 text-sm">
+                  <div className="truncate max-w-xs font-medium" title={ticket.subject}>
+                    {ticket.subject}
+                  </div>
+                </td>
+                <td className="px-6 py-4">
+                  <Badge label={ticket.category} variant="indigo" />
+                </td>
+                <td className="px-6 py-4">
+                  <Badge
+                    label={ticket.urgency}
+                    variant={URGENCY_VARIANT[ticket.urgency?.toLowerCase()] || 'gray'}
+                  />
+                </td>
+                <td className="px-6 py-4 text-slate-500 text-sm">
+                  {formatDate(ticket.created_at)}
+                </td>
+                <td className="px-4 py-4 text-slate-300 group-hover:text-indigo-400 transition-colors">
+                  <ChevronRight className="w-4 h-4" />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 // ─── Main Tickets page ────────────────────────────────────────────────────────
 
 export default function Tickets() {
@@ -353,7 +474,12 @@ export default function Tickets() {
     }
   };
 
+  const isAgent = user?.role === 'agent';
   const isMyQueueTab = activeTab === 'my_queue';
+  const isUnassignedTab = activeTab === 'unassigned';
+
+  // Agents land on my_queue by default
+  const effectiveTab = isAgent && activeTab === 'all' ? 'my_queue' : activeTab;
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
@@ -361,10 +487,13 @@ export default function Tickets() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold text-slate-900 tracking-tight">Tickets</h1>
-          <p className="text-slate-400 text-sm mt-1">Manage and view all customer support tickets.</p>
+          <p className="text-slate-400 text-sm mt-1">
+            {isAgent ? 'Your assigned tickets and unassigned queue.' : 'Manage and view all customer support tickets.'}
+          </p>
         </div>
         <div className="flex items-center gap-3">
-          {!isMyQueueTab && (
+          {/* Export is admin-only */}
+          {user?.role === 'admin' && !isMyQueueTab && (
             <button
               onClick={handleExport}
               className="inline-flex items-center gap-2 bg-white border border-slate-200 text-slate-600 px-4 py-2 rounded-lg font-medium hover:bg-slate-50 hover:border-slate-300 active:scale-95 transition-all duration-200 text-sm"
@@ -376,52 +505,68 @@ export default function Tickets() {
         </div>
       </div>
 
-      {/* Tabs */}
+      {/* Tabs — agents see My Queue + Unassigned only */}
       <div className="flex space-x-1 border-b border-slate-200">
-        <button
-          id="tab-all-tickets"
-          onClick={() => updateSearchParams({ tab: 'all' })}
-          className={`py-2.5 px-3 text-sm font-medium border-b-2 transition-colors -mb-px ${activeTab === 'all' ? 'border-indigo-500 text-indigo-700' : 'border-transparent text-slate-500 hover:text-slate-800 hover:border-slate-300'}`}
-        >
-          All Tickets
-        </button>
-        {(user?.role === 'admin' || user?.role === 'agent') && (
-          <button
-            id="tab-needs-review"
-            onClick={() => updateSearchParams({ tab: 'needs_review' })}
-            className={`py-2.5 px-3 text-sm font-medium border-b-2 flex items-center gap-1.5 transition-colors -mb-px ${activeTab === 'needs_review' ? 'border-violet-500 text-violet-700' : 'border-transparent text-slate-500 hover:text-slate-800 hover:border-slate-300'}`}
-          >
-            <AlertCircle className="w-4 h-4" />
-            Needs Review
-          </button>
-        )}
-        {/* My Queue tab — agent only */}
-        {user?.role === 'agent' && (
-          <button
-            id="tab-my-queue"
-            onClick={() => updateSearchParams({ tab: 'my_queue' })}
-            className={`py-2.5 px-3 text-sm font-medium border-b-2 flex items-center gap-1.5 transition-colors -mb-px ${isMyQueueTab ? 'border-emerald-500 text-emerald-700' : 'border-transparent text-slate-500 hover:text-slate-800 hover:border-slate-300'}`}
-          >
-            <UserCheck className="w-4 h-4" />
-            My Queue
-          </button>
+        {isAgent ? (
+          <>
+            <button
+              id="tab-my-queue"
+              onClick={() => updateSearchParams({ tab: 'my_queue' })}
+              className={`py-2.5 px-3 text-sm font-medium border-b-2 flex items-center gap-1.5 transition-colors -mb-px ${
+                effectiveTab === 'my_queue' ? 'border-emerald-500 text-emerald-700' : 'border-transparent text-slate-500 hover:text-slate-800 hover:border-slate-300'
+              }`}
+            >
+              <UserCheck className="w-4 h-4" />
+              My Queue
+            </button>
+            <button
+              id="tab-unassigned"
+              onClick={() => updateSearchParams({ tab: 'unassigned' })}
+              className={`py-2.5 px-3 text-sm font-medium border-b-2 flex items-center gap-1.5 transition-colors -mb-px ${
+                effectiveTab === 'unassigned' ? 'border-slate-500 text-slate-700' : 'border-transparent text-slate-500 hover:text-slate-800 hover:border-slate-300'
+              }`}
+            >
+              <Mailbox className="w-4 h-4" />
+              Unassigned
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              id="tab-all-tickets"
+              onClick={() => updateSearchParams({ tab: 'all' })}
+              className={`py-2.5 px-3 text-sm font-medium border-b-2 transition-colors -mb-px ${activeTab === 'all' ? 'border-indigo-500 text-indigo-700' : 'border-transparent text-slate-500 hover:text-slate-800 hover:border-slate-300'}`}
+            >
+              All Tickets
+            </button>
+            <button
+              id="tab-needs-review"
+              onClick={() => updateSearchParams({ tab: 'needs_review' })}
+              className={`py-2.5 px-3 text-sm font-medium border-b-2 flex items-center gap-1.5 transition-colors -mb-px ${activeTab === 'needs_review' ? 'border-violet-500 text-violet-700' : 'border-transparent text-slate-500 hover:text-slate-800 hover:border-slate-300'}`}
+            >
+              <AlertCircle className="w-4 h-4" />
+              Needs Review
+            </button>
+          </>
         )}
       </div>
 
-      {/* My Queue (no search/filter toolbar) */}
-      {isMyQueueTab ? (
+      {/* Tab content */}
+      {effectiveTab === 'my_queue' ? (
         <MyQueue currentUserId={user?.id} />
+      ) : effectiveTab === 'unassigned' ? (
+        <Unassigned />
       ) : (
         <>
-          {/* Toolbar / Filters */}
+          {/* Toolbar / Filters (admin only) */}
           <div className="flex flex-col lg:flex-row gap-4 justify-between bg-white p-4 rounded-2xl border border-slate-200/80 items-start lg:items-center">
-            <SearchBar 
-              onSearch={handleSearch} 
-              disabled={isLoading && tickets.length === 0} 
+            <SearchBar
+              onSearch={handleSearch}
+              disabled={isLoading && tickets.length === 0}
               initialValue={filters.search}
             />
-            <TicketFilters 
-              filters={filters} 
+            <TicketFilters
+              filters={filters}
               onFilterChange={handleFilterChange}
               disabled={(isLoading && tickets.length === 0) || activeTab === 'needs_review'}
               onClear={handleClearFilters}

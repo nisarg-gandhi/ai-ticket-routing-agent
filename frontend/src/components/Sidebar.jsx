@@ -36,8 +36,8 @@ export default function Sidebar({ mobileMenuOpen, setMobileMenuOpen }) {
   const navItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/admin/dashboard' },
     { icon: Ticket, label: 'Tickets', path: '/admin/tickets' },
-    ...(user?.role === 'admin' || user?.role === 'agent' ? [{ icon: Users, label: 'Customers', path: '/admin/customers' }] : []),
-    ...(user?.role === 'admin' || user?.role === 'agent' ? [{ icon: BarChart3, label: 'Reports', path: '/admin/reports' }] : [])
+    ...(user?.role === 'admin' ? [{ icon: Users, label: 'Customers', path: '/admin/customers' }] : []),
+    ...(user?.role === 'admin' ? [{ icon: BarChart3, label: 'Reports', path: '/admin/reports' }] : [])
   ];
 
   return (

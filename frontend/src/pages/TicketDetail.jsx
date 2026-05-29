@@ -10,6 +10,7 @@ import TicketMetadata from '../components/TicketMetadata';
 import DraftResponseBox from '../components/DraftResponseBox';
 import Badge from '../components/Badge';
 import StatusActions from '../components/StatusActions';
+import { useAuth } from '../contexts/AuthContext';
 import { formatDate } from '../utils/formatDate';
 
 // ─── Assignment reason badge ──────────────────────────────────────────────────
@@ -197,11 +198,13 @@ function AssignedAgentPanel({ ticket, onAssigned }) {
   );
 }
 
-// ─── Main component ───────────────────────────────────────────────────────────
+// ─── Main component ───────────────────────────────────────────────────────────────
 
 export default function TicketDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const role = user?.role;
   const [ticket, setTicket] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -346,7 +349,8 @@ export default function TicketDetail() {
         <StatusActions 
           currentStatus={ticket.status} 
           isUpdating={isUpdatingStatus} 
-          onUpdateStatus={handleUpdateStatus} 
+          onUpdateStatus={handleUpdateStatus}
+          role={role}
         />
       </div>
 
@@ -391,10 +395,29 @@ export default function TicketDetail() {
 
         {/* Sidebar (Right Col) */}
         <div className="lg:col-span-1 space-y-6">
-          <TicketMetadata ticket={ticket} />
+          {/* AI Analysis metadata — hide confidence score from agents (passed via prop) */}
+          <TicketMetadata ticket={ticket} role={role} />
 
-          {/* Agent Assignment Panel (admin-only UI; roles enforced by API) */}
-          <AssignedAgentPanel ticket={ticket} onAssigned={handleAssigned} />
+          {/* Assigned Agent Panel — admin only */}
+          {role === 'admin' && (
+            <AssignedAgentPanel ticket={ticket} onAssigned={handleAssigned} />
+          )}
+
+          {/* Agent self-confirmation: show a simple "Assigned to you" card */}
+          {role === 'agent' && ticket.assigned_agent && (
+            <div className="bg-white rounded-2xl border border-slate-200/80 p-6">
+              <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wider mb-3">Assigned To</h3>
+              <div className="flex items-center gap-3 p-3 bg-emerald-50 border border-emerald-200/80 rounded-xl">
+                <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center flex-shrink-0">
+                  <UserCheck className="w-4 h-4 text-white" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-semibold text-slate-900 truncate">{ticket.assigned_agent.name}</p>
+                  <p className="text-xs text-emerald-600 font-medium mt-0.5">Assigned to you</p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Ticket Info */}
           <div className="bg-white rounded-2xl border border-slate-200/80 p-6">
