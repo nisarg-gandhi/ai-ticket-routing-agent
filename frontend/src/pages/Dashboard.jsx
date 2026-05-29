@@ -38,10 +38,13 @@ export default function Dashboard() {
   }, [user]);
 
   const stats = overview ? [
-    { title: 'Total Tickets', value: overview.total_tickets.toString(), icon: Ticket },
-    { title: 'Resolution Rate', value: `${overview.resolution_rate}%`, icon: TrendingUp },
-    { title: 'Resolved Tickets', value: overview.resolved_tickets.toString(), icon: CheckCircle2 },
-    { title: 'High Urgency', value: overview.high_urgency_tickets.toString(), icon: AlertCircle },
+    { title: 'Total Tickets',    value: overview.total_tickets.toString(),       icon: Ticket,       accentColor: 'purple' },
+    { title: 'Resolution Rate', value: `${overview.resolution_rate}%`,           icon: TrendingUp,   accentColor: 'green'  },
+    { title: 'Resolved Tickets',value: overview.resolved_tickets.toString(),      icon: CheckCircle2, accentColor: 'blue'   },
+    // High Urgency card: only shown when value > 0
+    ...(overview.high_urgency_tickets > 0
+      ? [{ title: 'High Urgency', value: overview.high_urgency_tickets.toString(), icon: AlertCircle, accentColor: 'red' }]
+      : []),
   ] : [];
 
   const COLORS = ['#4f46e5', '#ec4899', '#f59e0b', '#10b981', '#6366f1'];
@@ -102,12 +105,28 @@ export default function Dashboard() {
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={charts.volume_trend}>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-                      <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#6b7280'}} dy={10} />
-                      <YAxis axisLine={false} tickLine={false} tick={{fill: '#6b7280'}} dx={-10} />
-                      <Tooltip 
-                        contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                      <XAxis
+                        dataKey="name"
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{ fill: '#6b7280' }}
+                        dy={10}
+                        tickFormatter={(val) => {
+                          const d = new Date(val);
+                          if (isNaN(d.getTime())) return val;
+                          return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                        }}
                       />
-                      <Line type="monotone" dataKey="tickets" stroke="#4f46e5" strokeWidth={3} dot={{r: 4, fill: '#4f46e5', strokeWidth: 2, stroke: '#fff'}} activeDot={{r: 6}} />
+                      <YAxis axisLine={false} tickLine={false} tick={{ fill: '#6b7280' }} dx={-10} />
+                      <Tooltip
+                        contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                        labelFormatter={(val) => {
+                          const d = new Date(val);
+                          if (isNaN(d.getTime())) return val;
+                          return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+                        }}
+                      />
+                      <Line type="monotone" dataKey="tickets" stroke="#4f46e5" strokeWidth={3} dot={{ r: 4, fill: '#4f46e5', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />
                     </LineChart>
                   </ResponsiveContainer>
                 )}

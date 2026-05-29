@@ -10,18 +10,11 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
-// ── Triage wordmark matching the landing page exactly ───────────────────────
+// ── Triage wordmark using the new app icon ───────────────────────────────────
 function TriageLogo({ collapsed }) {
   return (
     <div className="flex items-center gap-2 select-none">
-      {/* Logo mark — gradient + star SVG, identical to landing page */}
-      <span className="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-lg
-        bg-gradient-to-br from-indigo-500 to-violet-600 shadow-md shadow-indigo-500/25">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M7 1L9 5.5H13L9.5 8.5L11 13L7 10.5L3 13L4.5 8.5L1 5.5H5L7 1Z"
-            fill="white" fillOpacity="0.95" />
-        </svg>
-      </span>
+      <img src="/icon.svg" alt="Triage" className="w-7 h-7 flex-shrink-0" />
       {!collapsed && (
         <span className="text-[1.05rem] font-semibold tracking-tight text-slate-900">Triage</span>
       )}

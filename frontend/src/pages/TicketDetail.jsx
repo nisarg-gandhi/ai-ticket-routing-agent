@@ -149,13 +149,11 @@ function AssignedAgentPanel({ ticket, onAssigned }) {
       {/* ── Manual assignment dropdown ── */}
       <div className="space-y-2 pt-1 border-t border-slate-100">
         <p className="text-xs font-medium text-slate-500">
-          {ticket.assigned_agent_id ? 'Reassign to' : 'Assign to'}{' '}
-          {matchingAgents.length > 0 && ticket.category ? (
-            <span className="text-indigo-600 font-semibold">
-              {matchingAgents.length} agent{matchingAgents.length !== 1 ? 's' : ''} handling {ticket.category}
+          {ticket.assigned_agent_id ? 'Reassign to agent' : 'Assign to agent'}
+          {matchingAgents.length > 0 && ticket.category && (
+            <span className="ml-1.5 inline-flex items-center px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 font-semibold text-[11px] border border-indigo-100">
+              {matchingAgents.length} agent{matchingAgents.length !== 1 ? 's' : ''} available for {ticket.category}
             </span>
-          ) : (
-            <span>an agent</span>
           )}
         </p>
 

@@ -10,6 +10,16 @@
   --color-border: #e2e8f0; /* Slate-200 */
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
   --animate-slide-in: slide-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+
+  /* ── Landing page warm palette (light theme only) ─────────────────────── */
+  --lp-bg: #F7F3EE;
+  --lp-bg-dark: #EDE8E2;
+  --lp-text: #0F0F0F;
+  --lp-muted: #6B6560;
+  --lp-surface: #FFFFFF;
+  --lp-border: #E8E2DA;
+  --lp-accent: #7C3AED;
+  --lp-accent-hover: #6D28D9;
 }
 
 @keyframes slide-in {
@@ -33,13 +43,13 @@
     transition: background-color 9999s ease-in-out 0s;
   }
 
-  /* Autofill style override for dark auth page inputs */
+  /* Autofill style override for light auth page inputs */
   .auth-page input:-webkit-autofill,
   .auth-page input:-webkit-autofill:hover,
   .auth-page input:-webkit-autofill:focus {
-    -webkit-box-shadow: 0 0 0 1000px #1a1c23 inset !important;
-    -webkit-text-fill-color: #ffffff !important;
-    caret-color: #ffffff;
+    -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+    -webkit-text-fill-color: #0F0F0F !important;
+    caret-color: #0F0F0F;
     transition: background-color 9999s ease-in-out 0s;
   }
 }

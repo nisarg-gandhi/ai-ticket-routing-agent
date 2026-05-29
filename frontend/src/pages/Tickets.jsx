@@ -108,12 +108,19 @@ function MyQueue({ currentUserId }) {
 
   if (!queue.length) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 bg-white rounded-2xl border border-slate-200/80">
-        <div className="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center mb-3">
-          <Inbox className="w-7 h-7 text-emerald-400" />
+      <div className="flex flex-col items-center justify-center py-20 bg-white rounded-2xl border border-slate-200/80">
+        <div className="w-16 h-16 mb-4 text-slate-300">
+          {/* Inbox tray illustration */}
+          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="8" y="36" width="48" height="20" rx="4" fill="#EEF2FF" stroke="#C7D2FE" strokeWidth="1.5"/>
+            <path d="M8 36 L20 18 H44 L56 36" fill="#EEF2FF" stroke="#C7D2FE" strokeWidth="1.5" strokeLinejoin="round"/>
+            <path d="M24 36 C24 40.418 27.582 44 32 44 C36.418 44 40 40.418 40 36" fill="white" stroke="#A5B4FC" strokeWidth="1.5"/>
+            <circle cx="32" cy="26" r="6" fill="#C7D2FE"/>
+            <path d="M29 26 L31 28 L35 24" stroke="#6366F1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
         </div>
-        <p className="text-slate-900 font-semibold text-sm mb-1">Queue is empty</p>
-        <p className="text-xs text-slate-400">No open or in-progress tickets are assigned to you.</p>
+        <p className="text-slate-800 font-semibold text-sm mb-1.5">No tickets assigned yet</p>
+        <p className="text-xs text-slate-400 text-center max-w-[220px] leading-relaxed">New assignments will appear here in real time</p>
       </div>
     );
   }
@@ -257,11 +264,11 @@ function Unassigned() {
   if (!tickets.length) {
     return (
       <div className="flex flex-col items-center justify-center py-16 bg-white rounded-2xl border border-slate-200/80">
-        <div className="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center mb-3">
-          <Inbox className="w-7 h-7 text-slate-400" />
+        <div className="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center mb-3">
+          <Inbox className="w-7 h-7 text-emerald-400" />
         </div>
-        <p className="text-slate-900 font-semibold text-sm mb-1">No unassigned tickets</p>
-        <p className="text-xs text-slate-400">All open tickets have been assigned to an agent.</p>
+        <p className="text-slate-900 font-semibold text-sm mb-1">All caught up</p>
+        <p className="text-xs text-slate-400">No unassigned tickets right now</p>
       </div>
     );
   }
