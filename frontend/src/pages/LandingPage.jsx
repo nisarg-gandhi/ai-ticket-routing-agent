@@ -1,19 +1,12 @@
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-// ── Palette (warm light theme) ────────────────────────────────────────────────
-// #F7F3EE warm off-white bg | #0F0F0F text | #6B6560 muted | #7C3AED accent
+// ── Palette: #F7F3EE bg | #0F0F0F text | #6B6560 muted | #7C3AED accent ──────
 
-// ── Icons ────────────────────────────────────────────────────────────────────
+// ── Icons ─────────────────────────────────────────────────────────────────────
 
 const LogoMark = () => (
-  <img src="/icon.svg" alt="Triage" style={{ width: 28, height: 28, flexShrink: 0 }} />
-);
-
-const ChevronRightIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="9 18 15 12 9 6" />
-  </svg>
+  <img src="/icon.svg" alt="Triage" className="w-7 h-7 flex-shrink-0" />
 );
 
 const ArrowRightIcon = () => (
@@ -22,7 +15,12 @@ const ArrowRightIcon = () => (
   </svg>
 );
 
-// Step icons
+const ChevronRightIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="9 18 15 12 9 6" />
+  </svg>
+);
+
 const SubmitIcon = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
@@ -42,7 +40,6 @@ const CheckSquareIcon = () => (
   </svg>
 );
 
-// Feature icons
 const SparklesIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <path d="M12 3 L13.5 8.5 L19 10 L13.5 11.5 L12 17 L10.5 11.5 L5 10 L10.5 8.5 Z" />
@@ -62,38 +59,47 @@ const ZapIcon = () => (
   </svg>
 );
 
+const MenuIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" />
+  </svg>
+);
+
+const CloseIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+  </svg>
+);
+
 // ── Styled Div Mockups ────────────────────────────────────────────────────────
 
 function AIMockup() {
   return (
-    <div style={{ background: '#fff', border: '1px solid #E8E2DA', borderRadius: 16, overflow: 'hidden', boxShadow: '0 8px 32px rgba(0,0,0,0.07)' }}>
-      {/* Header */}
-      <div style={{ padding: '14px 18px', borderBottom: '1px solid #F0EBE4', background: '#FDFAF7' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#7C3AED' }} />
-          <span style={{ fontSize: 11, fontWeight: 700, color: '#0F0F0F', letterSpacing: '0.08em', textTransform: 'uppercase' }}>AI Analysis</span>
+    <div className="rounded-2xl overflow-hidden border border-[#E8E2DA] shadow-lg bg-white">
+      <div className="px-4 py-3 border-b border-[#F0EBE4]" style={{ background: '#FDFAF7' }}>
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-[#7C3AED]" />
+          <span className="text-[11px] font-bold tracking-widest uppercase text-[#0F0F0F]">AI Analysis</span>
         </div>
       </div>
-      <div style={{ padding: 18, display: 'flex', flexDirection: 'column', gap: 14 }}>
-        {/* Badges row */}
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+      <div className="p-4 flex flex-col gap-3">
+        <div className="flex gap-2 flex-wrap">
           {[{ label: 'Category', value: 'Billing', bg: '#EEF2FF', color: '#4338CA' },
             { label: 'Urgency', value: 'High', bg: '#FEF3C7', color: '#92400E' },
             { label: 'Sentiment', value: 'Negative', bg: '#FEE2E2', color: '#991B1B' }].map(b => (
-            <div key={b.label} style={{ display: 'flex', flexDirection: 'column', gap: 4, padding: '8px 12px', background: '#FAFAF9', border: '1px solid #F0EBE4', borderRadius: 10 }}>
-              <span style={{ fontSize: 10, color: '#6B6560', fontWeight: 500 }}>{b.label}</span>
-              <span style={{ fontSize: 12, fontWeight: 600, padding: '2px 8px', borderRadius: 999, background: b.bg, color: b.color }}>{b.value}</span>
+            <div key={b.label} className="flex flex-col gap-1 px-3 py-2 rounded-lg border border-[#F0EBE4]" style={{ background: '#FAFAF9' }}>
+              <span className="text-[10px] font-medium text-[#6B6560]">{b.label}</span>
+              <span className="text-[12px] font-semibold px-2 py-0.5 rounded-full" style={{ background: b.bg, color: b.color }}>{b.value}</span>
             </div>
           ))}
         </div>
-        {/* Confidence bar */}
-        <div style={{ borderTop: '1px solid #F0EBE4', paddingTop: 14 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-            <span style={{ fontSize: 11, color: '#6B6560', fontWeight: 500 }}>Confidence Score</span>
-            <span style={{ fontSize: 11, fontWeight: 700, color: '#0F0F0F' }}>87%</span>
+        <div className="pt-3 border-t border-[#F0EBE4]">
+          <div className="flex justify-between text-[11px] mb-1.5">
+            <span className="font-medium text-[#6B6560]">Confidence Score</span>
+            <span className="font-bold text-[#0F0F0F]">87%</span>
           </div>
-          <div style={{ background: '#E8E2DA', borderRadius: 999, height: 8, overflow: 'hidden' }}>
-            <div style={{ width: '87%', height: '100%', background: 'linear-gradient(90deg, #7C3AED, #5B21B6)', borderRadius: 999 }} />
+          <div className="h-2 rounded-full overflow-hidden" style={{ background: '#E8E2DA' }}>
+            <div className="h-full rounded-full w-[87%]" style={{ background: 'linear-gradient(90deg, #7C3AED, #5B21B6)' }} />
           </div>
         </div>
       </div>
@@ -103,36 +109,34 @@ function AIMockup() {
 
 function AgentMockup() {
   return (
-    <div style={{ background: '#fff', border: '1px solid #E8E2DA', borderRadius: 16, overflow: 'hidden', boxShadow: '0 8px 32px rgba(0,0,0,0.07)' }}>
-      <div style={{ padding: '14px 18px', borderBottom: '1px solid #F0EBE4', background: '#FDFAF7' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#10B981' }} />
-          <span style={{ fontSize: 11, fontWeight: 700, color: '#0F0F0F', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Assigned Agent</span>
+    <div className="rounded-2xl overflow-hidden border border-[#E8E2DA] shadow-lg bg-white">
+      <div className="px-4 py-3 border-b border-[#F0EBE4]" style={{ background: '#FDFAF7' }}>
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-emerald-500" />
+          <span className="text-[11px] font-bold tracking-widest uppercase text-[#0F0F0F]">Assigned Agent</span>
         </div>
       </div>
-      <div style={{ padding: 18, display: 'flex', flexDirection: 'column', gap: 12 }}>
-        {/* AI Suggestion banner */}
-        <div style={{ background: '#EEF2FF', border: '1px solid #C7D2FE', borderRadius: 10, padding: '10px 14px' }}>
-          <div style={{ fontSize: 10, fontWeight: 700, color: '#4338CA', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 4 }}>
+      <div className="p-4 flex flex-col gap-3">
+        <div className="p-3 rounded-xl border border-indigo-200 bg-indigo-50">
+          <div className="text-[10px] font-bold text-indigo-700 mb-2 flex items-center gap-1">
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
             AI Suggestion
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div className="flex justify-between items-center">
             <div>
-              <div style={{ fontSize: 13, fontWeight: 600, color: '#0F0F0F' }}>Sarah Chen</div>
-              <div style={{ fontSize: 11, color: '#6B6560' }}>sarah@support.co</div>
+              <div className="text-[13px] font-semibold text-[#0F0F0F]">Sarah Chen</div>
+              <div className="text-[11px] text-[#6B6560]">sarah@support.co</div>
             </div>
-            <div style={{ background: '#7C3AED', color: '#fff', fontSize: 11, fontWeight: 600, padding: '5px 12px', borderRadius: 8 }}>Accept</div>
+            <div className="text-[11px] font-semibold text-white px-3 py-1.5 rounded-lg bg-[#7C3AED]">Accept</div>
           </div>
         </div>
-        {/* Assigned */}
-        <div style={{ background: '#ECFDF5', border: '1px solid #A7F3D0', borderRadius: 10, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#10B981', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <div className="p-3 rounded-xl border border-emerald-200 bg-emerald-50 flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center flex-shrink-0">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           </div>
           <div>
-            <div style={{ fontSize: 12, fontWeight: 600, color: '#0F0F0F' }}>Marcus Rodriguez</div>
-            <div style={{ fontSize: 11, color: '#059669', fontWeight: 500 }}>Assigned · AI Suggested</div>
+            <div className="text-[12px] font-semibold text-[#0F0F0F]">Marcus Rodriguez</div>
+            <div className="text-[11px] font-medium text-emerald-700">Assigned · AI Suggested</div>
           </div>
         </div>
       </div>
@@ -147,22 +151,22 @@ function QueueMockup() {
     { subject: 'Account access issue', status: 'Open', urgency: 'Critical', bg: '#FEE2E2', color: '#991B1B' },
   ];
   return (
-    <div style={{ background: '#fff', border: '1px solid #E8E2DA', borderRadius: 16, overflow: 'hidden', boxShadow: '0 8px 32px rgba(0,0,0,0.07)' }}>
-      <div style={{ padding: '14px 18px', borderBottom: '1px solid #F0EBE4', background: '#FDFAF7', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#3B82F6' }} />
-          <span style={{ fontSize: 11, fontWeight: 700, color: '#0F0F0F', letterSpacing: '0.08em', textTransform: 'uppercase' }}>My Queue</span>
+    <div className="rounded-2xl overflow-hidden border border-[#E8E2DA] shadow-lg bg-white">
+      <div className="px-4 py-3 border-b border-[#F0EBE4] flex items-center justify-between" style={{ background: '#FDFAF7' }}>
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-blue-500" />
+          <span className="text-[11px] font-bold tracking-widest uppercase text-[#0F0F0F]">My Queue</span>
         </div>
-        <span style={{ fontSize: 11, background: '#EEF2FF', color: '#4338CA', fontWeight: 600, padding: '2px 8px', borderRadius: 999 }}>3 tickets</span>
+        <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700">3 tickets</span>
       </div>
-      <div style={{ padding: '8px 0' }}>
+      <div>
         {tickets.map((t, i) => (
-          <div key={i} style={{ padding: '10px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: i < tickets.length - 1 ? '1px solid #F7F3EE' : 'none' }}>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 12, fontWeight: 600, color: '#0F0F0F', marginBottom: 2 }}>{t.subject}</div>
-              <span style={{ fontSize: 10, fontWeight: 600, padding: '1px 6px', borderRadius: 999, background: t.bg, color: t.color }}>{t.status}</span>
+          <div key={i} className={`px-4 py-3 flex justify-between items-center ${i < tickets.length - 1 ? 'border-b border-[#F7F3EE]' : ''}`}>
+            <div className="flex-1 min-w-0 mr-3">
+              <div className="text-[12px] font-semibold text-[#0F0F0F] truncate mb-1">{t.subject}</div>
+              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: t.bg, color: t.color }}>{t.status}</span>
             </div>
-            <span style={{ fontSize: 10, fontWeight: 600, padding: '2px 8px', borderRadius: 999, background: t.bg, color: t.color, marginLeft: 8 }}>{t.urgency}</span>
+            <span className="text-[10px] font-semibold px-2 py-1 rounded-full flex-shrink-0" style={{ background: t.bg, color: t.color }}>{t.urgency}</span>
           </div>
         ))}
       </div>
@@ -170,65 +174,59 @@ function QueueMockup() {
   );
 }
 
-// ── Browser Mockup Frame for hero ─────────────────────────────────────────────
+// ── Browser Mockup Frame ──────────────────────────────────────────────────────
 
 function BrowserMockup() {
   return (
-    <div style={{
-      borderRadius: 14,
-      overflow: 'hidden',
-      boxShadow: '0 24px 80px rgba(0,0,0,0.14), 0 4px 16px rgba(0,0,0,0.08)',
-      border: '1px solid #E8E2DA',
-      maxWidth: 820,
-      width: '100%',
-    }}>
-      {/* Browser chrome */}
-      <div style={{ background: '#F0EBE4', padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 12, borderBottom: '1px solid #E8E2DA' }}>
-        <div style={{ display: 'flex', gap: 6 }}>
-          {['#FF5F57','#FEBC2E','#28C840'].map((c, i) => (
-            <div key={i} style={{ width: 12, height: 12, borderRadius: '50%', background: c }} />
+    <div className="w-full rounded-xl md:rounded-2xl overflow-hidden border border-[#E8E2DA]"
+      style={{ boxShadow: '0 24px 80px rgba(0,0,0,0.12), 0 4px 16px rgba(0,0,0,0.06)' }}>
+      {/* Chrome bar */}
+      <div className="flex items-center gap-3 px-4 py-2.5 border-b border-[#E8E2DA]" style={{ background: '#F0EBE4' }}>
+        <div className="flex gap-1.5">
+          {['#FF5F57', '#FEBC2E', '#28C840'].map((c, i) => (
+            <div key={i} className="w-3 h-3 rounded-full" style={{ background: c }} />
           ))}
         </div>
-        <div style={{ flex: 1, background: '#FDFAF7', border: '1px solid #E8E2DA', borderRadius: 6, padding: '4px 12px', fontSize: 11, color: '#6B6560' }}>
+        <div className="flex-1 rounded-md px-3 py-1 text-[11px] text-[#6B6560] border border-[#E8E2DA]" style={{ background: '#FDFAF7' }}>
           app.triage.ai/admin/tickets/42
         </div>
       </div>
-      {/* Simulated ticket detail UI */}
-      <div style={{ background: '#F8F4EF', padding: 20, display: 'grid', gridTemplateColumns: '1fr 320px', gap: 16 }}>
+      {/* UI content — stacks on mobile, side-by-side on md+ */}
+      <div className="p-3 sm:p-4 flex flex-col md:grid md:grid-cols-[1fr_280px] gap-3" style={{ background: '#F8F4EF' }}>
         {/* Left col */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <div className="flex flex-col gap-3">
           {/* Ticket header */}
-          <div style={{ background: '#fff', border: '1px solid #E8E2DA', borderRadius: 14, padding: 18 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
-              <div style={{ fontSize: 15, fontWeight: 700, color: '#0F0F0F' }}>Charged twice for same subscription</div>
-              <span style={{ background: '#DBEAFE', color: '#1E40AF', fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: 999 }}>Open</span>
+          <div className="bg-white border border-[#E8E2DA] rounded-xl p-3 sm:p-4">
+            <div className="flex justify-between items-start gap-2 mb-2">
+              <div className="text-[13px] sm:text-[15px] font-bold text-[#0F0F0F] leading-snug">Charged twice for same subscription</div>
+              <span className="flex-shrink-0 text-[10px] sm:text-[11px] font-semibold px-2 py-1 rounded-full bg-blue-100 text-blue-700">Open</span>
             </div>
-            <div style={{ display: 'flex', gap: 16, fontSize: 12, color: '#6B6560' }}>
+            <div className="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-[#6B6560]">
               <span>👤 Alex Johnson</span>
-              <span>✉ alex@company.co</span>
+              <span className="hidden sm:inline">✉ alex@company.co</span>
               <span>🕐 May 26, 2026</span>
             </div>
           </div>
           {/* Message */}
-          <div style={{ background: '#fff', border: '1px solid #E8E2DA', borderRadius: 14, padding: 18 }}>
-            <div style={{ fontSize: 10, fontWeight: 700, color: '#6B6560', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 10 }}>Original Message</div>
-            <div style={{ background: '#FDFAF7', border: '1px solid #F0EBE4', borderRadius: 10, padding: 14, fontSize: 12, color: '#4A4540', lineHeight: 1.6 }}>
-              Hi, I noticed that I was charged twice this month for my Pro subscription. I only have one account. Please could you look into this and issue a refund for the duplicate charge?
+          <div className="bg-white border border-[#E8E2DA] rounded-xl p-3 sm:p-4">
+            <div className="text-[9px] sm:text-[10px] font-bold text-[#6B6560] tracking-widest uppercase mb-2">Original Message</div>
+            <div className="text-[11px] sm:text-[12px] text-[#4A4540] leading-relaxed rounded-lg p-3 border border-[#F0EBE4]" style={{ background: '#FDFAF7' }}>
+              Hi, I noticed that I was charged twice this month for my Pro subscription. Please look into this and issue a refund for the duplicate charge?
             </div>
           </div>
-          {/* Draft response */}
-          <div style={{ background: 'linear-gradient(135deg, #EEF2FF, #F5F3FF)', border: '1px solid #C7D2FE', borderRadius: 14, padding: 18 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-              <span style={{ fontSize: 10, fontWeight: 700, color: '#7C3AED', letterSpacing: '0.08em', textTransform: 'uppercase' }}>AI Draft Response</span>
+          {/* Draft */}
+          <div className="rounded-xl p-3 sm:p-4 border border-indigo-200" style={{ background: 'linear-gradient(135deg, #EEF2FF, #F5F3FF)' }}>
+            <div className="flex items-center gap-1.5 mb-2">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <span className="text-[9px] sm:text-[10px] font-bold text-[#7C3AED] tracking-widest uppercase">AI Draft Response</span>
             </div>
-            <div style={{ fontSize: 12, color: '#4338CA', lineHeight: 1.6 }}>
-              Hi Alex, I can see the duplicate charge on your account and I'm sorry for the inconvenience. I'll initiate a refund for the extra charge within 3-5 business days...
+            <div className="text-[11px] sm:text-[12px] text-indigo-700 leading-relaxed">
+              Hi Alex, I can see the duplicate charge and I'm sorry for the inconvenience. I'll initiate a refund within 3–5 business days...
             </div>
           </div>
         </div>
-        {/* Right col */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+        {/* Right col — hidden on smallest screens, shown sm+ */}
+        <div className="hidden sm:flex flex-col gap-3">
           <AIMockup />
           <AgentMockup />
         </div>
@@ -241,16 +239,24 @@ function BrowserMockup() {
 
 function Nav({ onLogin, onRegister }) {
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 8);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   const scrollTo = (id) => {
+    setMenuOpen(false);
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  const NAV_LINKS = [
+    { label: 'How it works', target: 'how-it-works' },
+    { label: 'Features', target: 'features' },
+    { label: 'Pricing', target: 'pricing' },
+  ];
 
   return (
     <header
@@ -261,68 +267,86 @@ function Nav({ onLogin, onRegister }) {
         boxShadow: scrolled ? '0 2px 16px rgba(0,0,0,0.06)' : 'none',
       }}
     >
-      <div style={{ maxWidth: 1140, margin: '0 auto', padding: '0 24px', height: 60, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-[60px] flex items-center justify-between gap-4">
         {/* Logo */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div className="flex items-center gap-2 flex-shrink-0">
           <LogoMark />
-          <span style={{ fontSize: '1.05rem', fontWeight: 700, letterSpacing: '-0.02em', color: '#0F0F0F' }}>Triage</span>
+          <span className="text-[1.05rem] font-bold tracking-tight text-[#0F0F0F]">Triage</span>
         </div>
 
-        {/* Center nav */}
-        <nav style={{ display: 'flex', gap: 2, position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}
-          className="hidden md:flex">
-          {[
-            { label: 'How it works', target: 'how-it-works' },
-            { label: 'Features', target: 'features' },
-            { label: 'Pricing', target: 'pricing' },
-          ].map(item => (
+        {/* Center nav — desktop only */}
+        <nav className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
+          {NAV_LINKS.map(item => (
             <button
               key={item.label}
               onClick={() => scrollTo(item.target)}
-              style={{
-                padding: '6px 14px', borderRadius: 8, fontSize: 14, fontWeight: 500,
-                color: '#6B6560', background: 'transparent', border: 'none', cursor: 'pointer',
-                transition: 'color 0.15s, background 0.15s',
-              }}
-              onMouseEnter={e => { e.currentTarget.style.color = '#0F0F0F'; e.currentTarget.style.background = 'rgba(0,0,0,0.04)'; }}
-              onMouseLeave={e => { e.currentTarget.style.color = '#6B6560'; e.currentTarget.style.background = 'transparent'; }}
+              className="px-3 py-1.5 rounded-lg text-sm font-medium text-[#6B6560] hover:text-[#0F0F0F] hover:bg-black/[0.04] transition-colors cursor-pointer border-none bg-transparent"
             >
               {item.label}
             </button>
           ))}
         </nav>
 
-        {/* Right actions */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        {/* Right — desktop */}
+        <div className="hidden md:flex items-center gap-2">
           <button
             id="nav-sign-in"
             onClick={onLogin}
-            style={{
-              padding: '7px 16px', borderRadius: 8, fontSize: 14, fontWeight: 500,
-              color: '#6B6560', background: 'transparent', border: '1px solid transparent', cursor: 'pointer',
-              transition: 'all 0.15s',
-            }}
-            onMouseEnter={e => { e.currentTarget.style.color = '#0F0F0F'; e.currentTarget.style.borderColor = '#E8E2DA'; e.currentTarget.style.background = '#FFFFFF'; }}
-            onMouseLeave={e => { e.currentTarget.style.color = '#6B6560'; e.currentTarget.style.borderColor = 'transparent'; e.currentTarget.style.background = 'transparent'; }}
+            className="px-4 py-1.5 rounded-lg text-sm font-medium text-[#6B6560] hover:text-[#0F0F0F] hover:bg-white hover:border-[#E8E2DA] border border-transparent transition-all cursor-pointer bg-transparent"
           >
             Sign in
           </button>
           <button
             id="nav-get-started"
             onClick={onRegister}
-            style={{
-              padding: '7px 18px', borderRadius: 8, fontSize: 14, fontWeight: 600,
-              color: '#fff', background: '#7C3AED', border: 'none', cursor: 'pointer',
-              boxShadow: '0 2px 8px rgba(124,58,237,0.3)',
-              transition: 'all 0.15s',
-            }}
-            onMouseEnter={e => { e.currentTarget.style.background = '#6D28D9'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(124,58,237,0.4)'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = '#7C3AED'; e.currentTarget.style.boxShadow = '0 2px 8px rgba(124,58,237,0.3)'; }}
+            className="px-4 py-1.5 rounded-lg text-sm font-semibold text-white transition-all cursor-pointer border-none"
+            style={{ background: '#7C3AED', boxShadow: '0 2px 8px rgba(124,58,237,0.3)' }}
+            onMouseEnter={e => { e.currentTarget.style.background = '#6D28D9'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = '#7C3AED'; }}
           >
             Get started free
           </button>
         </div>
+
+        {/* Hamburger — mobile only */}
+        <button
+          className="md:hidden p-2 rounded-lg text-[#6B6560] hover:text-[#0F0F0F] hover:bg-black/[0.04] transition-colors cursor-pointer border-none bg-transparent"
+          onClick={() => setMenuOpen(v => !v)}
+          aria-label="Toggle menu"
+        >
+          {menuOpen ? <CloseIcon /> : <MenuIcon />}
+        </button>
       </div>
+
+      {/* Mobile drawer */}
+      {menuOpen && (
+        <div className="md:hidden border-t border-[#E8E2DA] px-4 py-4 flex flex-col gap-1" style={{ background: '#F7F3EE' }}>
+          {NAV_LINKS.map(item => (
+            <button
+              key={item.label}
+              onClick={() => scrollTo(item.target)}
+              className="w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium text-[#6B6560] hover:text-[#0F0F0F] hover:bg-black/[0.04] transition-colors cursor-pointer border-none bg-transparent"
+            >
+              {item.label}
+            </button>
+          ))}
+          <div className="mt-3 pt-3 border-t border-[#E8E2DA] flex flex-col gap-2">
+            <button
+              onClick={() => { setMenuOpen(false); onLogin(); }}
+              className="w-full py-2.5 rounded-lg text-sm font-medium text-[#0F0F0F] border border-[#E8E2DA] bg-white transition-colors cursor-pointer"
+            >
+              Sign in
+            </button>
+            <button
+              onClick={() => { setMenuOpen(false); onRegister(); }}
+              className="w-full py-2.5 rounded-lg text-sm font-semibold text-white border-none cursor-pointer"
+              style={{ background: '#7C3AED' }}
+            >
+              Get started free
+            </button>
+          </div>
+        </div>
+      )}
     </header>
   );
 }
@@ -331,138 +355,67 @@ function Nav({ onLogin, onRegister }) {
 
 function SectionLabel({ children }) {
   return (
-    <div style={{ textAlign: 'center', marginBottom: 16 }}>
-      <span style={{
-        fontSize: 11, fontWeight: 700, letterSpacing: '0.12em',
-        textTransform: 'uppercase', color: '#7C3AED',
-        padding: '4px 12px', background: 'rgba(124,58,237,0.08)',
-        borderRadius: 999, border: '1px solid rgba(124,58,237,0.15)',
-      }}>
+    <div className="flex justify-center mb-4">
+      <span className="text-[11px] font-bold tracking-[0.12em] uppercase px-3 py-1 rounded-full border"
+        style={{ color: '#7C3AED', background: 'rgba(124,58,237,0.08)', borderColor: 'rgba(124,58,237,0.2)' }}>
         {children}
       </span>
     </div>
   );
 }
 
-// ── How It Works steps ────────────────────────────────────────────────────────
+// ── Steps data ────────────────────────────────────────────────────────────────
 
 const STEPS = [
-  {
-    number: '01',
-    icon: <SubmitIcon />,
-    title: 'Customer submits a ticket',
-    desc: 'A support request comes in via your portal. No manual sorting needed.',
-    color: '#7C3AED',
-    bg: 'rgba(124,58,237,0.06)',
-    border: 'rgba(124,58,237,0.15)',
-  },
-  {
-    number: '02',
-    icon: <BrainIcon />,
-    title: 'AI classifies and routes',
-    desc: 'Triage analyzes the message, assigns a category, urgency, and confidence score, then suggests the best available agent.',
-    color: '#0EA5E9',
-    bg: 'rgba(14,165,233,0.06)',
-    border: 'rgba(14,165,233,0.15)',
-  },
-  {
-    number: '03',
-    icon: <CheckSquareIcon />,
-    title: 'Agent resolves it',
-    desc: 'The assigned agent sees it in their queue, uses the AI draft response, and resolves it faster.',
-    color: '#10B981',
-    bg: 'rgba(16,185,129,0.06)',
-    border: 'rgba(16,185,129,0.15)',
-  },
+  { number: '01', icon: <SubmitIcon />, title: 'Customer submits a ticket', desc: 'A support request comes in via your portal. No manual sorting needed.', color: '#7C3AED', bg: 'rgba(124,58,237,0.06)', border: 'rgba(124,58,237,0.2)' },
+  { number: '02', icon: <BrainIcon />,  title: 'AI classifies and routes',   desc: 'Triage analyzes the message, assigns a category, urgency, and confidence score, then suggests the best available agent.', color: '#0EA5E9', bg: 'rgba(14,165,233,0.06)', border: 'rgba(14,165,233,0.2)' },
+  { number: '03', icon: <CheckSquareIcon />, title: 'Agent resolves it', desc: 'The assigned agent sees it in their queue, uses the AI draft response, and resolves it faster.', color: '#10B981', bg: 'rgba(16,185,129,0.06)', border: 'rgba(16,185,129,0.2)' },
 ];
 
 // ── Features data ─────────────────────────────────────────────────────────────
 
 const FEATURES = [
-  {
-    icon: <SparklesIcon />,
-    iconColor: '#7C3AED',
-    iconBg: 'rgba(124,58,237,0.08)',
-    title: 'AI Classification',
-    desc: "Every incoming ticket is automatically analyzed using Groq's LLaMA model. It extracts category, urgency level, and customer sentiment — in under a second.",
-    mockup: <AIMockup />,
-    reverse: false,
-  },
-  {
-    icon: <RouteIcon />,
-    iconColor: '#0EA5E9',
-    iconBg: 'rgba(14,165,233,0.08)',
-    title: 'Smart Agent Routing',
-    desc: "Triage matches each ticket to the best available agent based on their specialization and current workload. The AI suggestion appears right in the admin view — one click to confirm.",
-    mockup: <AgentMockup />,
-    reverse: true,
-  },
-  {
-    icon: <ZapIcon />,
-    iconColor: '#10B981',
-    iconBg: 'rgba(16,185,129,0.08)',
-    title: 'Real-time Updates',
-    desc: "Agents see new assignments land in their queue the moment they happen — no refresh needed. Server-sent events keep every view live, so nothing slips through.",
-    mockup: <QueueMockup />,
-    reverse: false,
-  },
+  { icon: <SparklesIcon />, iconColor: '#7C3AED', iconBg: 'rgba(124,58,237,0.08)', title: 'AI Classification',   desc: "Every incoming ticket is automatically analyzed using Groq's LLaMA model. It extracts category, urgency level, and customer sentiment — in under a second.", mockup: <AIMockup />,    reverse: false },
+  { icon: <RouteIcon />,    iconColor: '#0EA5E9', iconBg: 'rgba(14,165,233,0.08)',  title: 'Smart Agent Routing', desc: "Triage matches each ticket to the best available agent based on their specialization and current workload. The AI suggestion appears right in the admin view — one click to confirm.", mockup: <AgentMockup />, reverse: true  },
+  { icon: <ZapIcon />,      iconColor: '#10B981', iconBg: 'rgba(16,185,129,0.08)', title: 'Real-time Updates',   desc: "Agents see new assignments land in their queue the moment they happen — no refresh needed. Server-sent events keep every view live, so nothing slips through.", mockup: <QueueMockup />, reverse: false },
 ];
 
-// ── Main page ─────────────────────────────────────────────────────────────────
+// ── Page ─────────────────────────────────────────────────────────────────────
 
 export default function LandingPage() {
   const navigate = useNavigate();
   const goLogin    = () => navigate('/login');
   const goRegister = () => navigate('/register');
 
-  const scrollToHowItWorks = () => {
-    document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
-    <div style={{ background: '#F7F3EE', color: '#0F0F0F', fontFamily: "'Inter', ui-sans-serif, system-ui, sans-serif", overflowX: 'hidden' }}>
+    <div className="overflow-x-hidden font-sans antialiased" style={{ background: '#F7F3EE', color: '#0F0F0F' }}>
 
-      {/* ── Nav ─────────────────────────────────────────────────────────── */}
       <Nav onLogin={goLogin} onRegister={goRegister} />
 
       <main>
-        {/* ── Hero ────────────────────────────────────────────────────── */}
+        {/* ── Hero ──────────────────────────────────────────────────────── */}
         <section
           id="hero"
-          style={{
-            paddingTop: 120,
-            paddingBottom: 80,
-            background: 'linear-gradient(180deg, #F7F3EE 0%, #EDE8E2 100%)',
-            position: 'relative',
-            overflow: 'hidden',
-          }}
+          className="relative overflow-hidden pt-28 pb-16 sm:pt-36 sm:pb-20 px-4 sm:px-6"
+          style={{ background: 'linear-gradient(180deg, #F7F3EE 0%, #EDE8E2 100%)' }}
         >
-          {/* Subtle warm grid */}
-          <div aria-hidden="true" style={{
-            position: 'absolute', inset: 0, pointerEvents: 'none',
-            backgroundImage: 'radial-gradient(circle, rgba(124,58,237,0.04) 1px, transparent 1px)',
-            backgroundSize: '36px 36px',
-          }} />
+          {/* Warm dot grid */}
+          <div aria-hidden className="pointer-events-none absolute inset-0"
+            style={{ backgroundImage: 'radial-gradient(circle, rgba(124,58,237,0.04) 1px, transparent 1px)', backgroundSize: '36px 36px' }} />
 
-          <div style={{ maxWidth: 1140, margin: '0 auto', padding: '0 24px', position: 'relative', zIndex: 1 }}>
+          <div className="relative z-10 max-w-6xl mx-auto">
             {/* Badge */}
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 28 }}>
-              <span style={{
-                display: 'inline-flex', alignItems: 'center', gap: 8,
-                padding: '6px 16px', borderRadius: 999, fontSize: 12, fontWeight: 600,
-                color: '#7C3AED', background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.2)',
-              }}>
-                <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#7C3AED', animation: 'pulse 2s infinite' }} />
+            <div className="flex justify-center mb-6">
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold border"
+                style={{ color: '#7C3AED', background: 'rgba(124,58,237,0.08)', borderColor: 'rgba(124,58,237,0.2)' }}>
+                <span className="w-1.5 h-1.5 rounded-full animate-pulse bg-[#7C3AED]" />
                 Now live — AI-powered ticket routing
               </span>
             </div>
 
             {/* Headline */}
-            <h1 style={{
-              textAlign: 'center', fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', fontWeight: 800,
-              letterSpacing: '-0.03em', lineHeight: 1.1, color: '#0F0F0F',
-              marginBottom: 24,
-            }}>
+            <h1 className="text-center font-extrabold tracking-tight leading-[1.1] mb-5 text-[#0F0F0F]"
+              style={{ fontSize: 'clamp(2.2rem, 7vw, 4.5rem)' }}>
               AI-powered support,<br />
               <span style={{ background: 'linear-gradient(135deg, #7C3AED, #5B21B6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                 routed instantly.
@@ -470,168 +423,112 @@ export default function LandingPage() {
             </h1>
 
             {/* Sub */}
-            <p style={{
-              textAlign: 'center', maxWidth: 560, margin: '0 auto 36px',
-              fontSize: 18, lineHeight: 1.65, color: '#6B6560', fontWeight: 400,
-            }}>
+            <p className="text-center max-w-xl mx-auto mb-8 leading-relaxed text-[#6B6560] text-base sm:text-lg">
               Triage classifies every ticket, scores confidence, and assigns the right agent automatically — so nothing falls through the cracks.
             </p>
 
             {/* CTAs */}
-            <div style={{ display: 'flex', justifyContent: 'center', gap: 12, flexWrap: 'wrap', marginBottom: 64 }}>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-12">
               <button
                 id="hero-get-started"
                 onClick={goRegister}
-                style={{
-                  padding: '13px 28px', borderRadius: 10, fontSize: 15, fontWeight: 700,
-                  color: '#fff', background: '#7C3AED', border: 'none', cursor: 'pointer',
-                  boxShadow: '0 4px 20px rgba(124,58,237,0.35)',
-                  transition: 'all 0.2s', display: 'flex', alignItems: 'center', gap: 8,
-                }}
-                onMouseEnter={e => { e.currentTarget.style.background = '#6D28D9'; e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 8px 28px rgba(124,58,237,0.45)'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = '#7C3AED'; e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 4px 20px rgba(124,58,237,0.35)'; }}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl text-[15px] font-bold text-white border-none cursor-pointer transition-all"
+                style={{ background: '#7C3AED', boxShadow: '0 4px 20px rgba(124,58,237,0.35)' }}
+                onMouseEnter={e => { e.currentTarget.style.background = '#6D28D9'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = '#7C3AED'; e.currentTarget.style.transform = ''; }}
               >
                 Get started free <ArrowRightIcon />
               </button>
               <button
                 id="hero-how-it-works"
-                onClick={scrollToHowItWorks}
-                style={{
-                  padding: '13px 28px', borderRadius: 10, fontSize: 15, fontWeight: 600,
-                  color: '#0F0F0F', background: '#FFFFFF', border: '1px solid #E8E2DA', cursor: 'pointer',
-                  transition: 'all 0.2s',
-                }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = '#7C3AED'; e.currentTarget.style.color = '#7C3AED'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = '#E8E2DA'; e.currentTarget.style.color = '#0F0F0F'; e.currentTarget.style.transform = ''; }}
+                onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
+                className="w-full sm:w-auto px-7 py-3.5 rounded-xl text-[15px] font-semibold text-[#0F0F0F] bg-white border border-[#E8E2DA] cursor-pointer transition-all hover:border-[#7C3AED] hover:text-[#7C3AED]"
               >
                 See how it works
               </button>
             </div>
 
-            {/* Hero browser mockup */}
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <BrowserMockup />
-            </div>
+            {/* Hero mockup */}
+            <BrowserMockup />
           </div>
         </section>
 
-        {/* ── How It Works ────────────────────────────────────────────── */}
-        <section
-          id="how-it-works"
-          style={{ padding: '96px 24px', background: '#F7F3EE' }}
-        >
-          <div style={{ maxWidth: 1140, margin: '0 auto' }}>
+        {/* ── How It Works ──────────────────────────────────────────────── */}
+        <section id="how-it-works" className="py-20 sm:py-24 px-4 sm:px-6" style={{ background: '#F7F3EE' }}>
+          <div className="max-w-6xl mx-auto">
             <SectionLabel>How it works</SectionLabel>
-            <h2 style={{
-              textAlign: 'center', fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', fontWeight: 700,
-              letterSpacing: '-0.025em', color: '#0F0F0F', marginBottom: 12,
-            }}>
+            <h2 className="text-center font-bold tracking-tight text-[#0F0F0F] mb-3"
+              style={{ fontSize: 'clamp(1.6rem, 4vw, 2.5rem)' }}>
               From ticket to resolution in three steps
             </h2>
-            <p style={{ textAlign: 'center', color: '#6B6560', maxWidth: 480, margin: '0 auto 64px', fontSize: 16, lineHeight: 1.6 }}>
+            <p className="text-center text-[#6B6560] max-w-md mx-auto mb-12 text-[15px] leading-relaxed">
               No configuration. No routing rules. Just connect and watch tickets flow to the right people.
             </p>
 
-            {/* Steps grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 24, position: 'relative' }}>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
               {STEPS.map((step, i) => (
-                <div key={i} style={{ position: 'relative' }}>
-                  {/* Connector line (desktop) */}
-                  {i < STEPS.length - 1 && (
-                    <div style={{
-                      position: 'absolute', top: 36, right: -12, width: 24, height: 1,
-                      background: `linear-gradient(90deg, ${step.border}, transparent)`,
-                      display: 'none',
-                    }} className="hidden lg:block" />
-                  )}
-                  <div style={{
-                    background: '#FFFFFF', border: `1px solid #E8E2DA`,
-                    borderRadius: 16, padding: 28, height: '100%',
-                    transition: 'transform 0.2s, box-shadow 0.2s',
-                  }}
-                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 12px 40px rgba(0,0,0,0.07)'; }}
-                    onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = ''; }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
-                      <div style={{
-                        width: 44, height: 44, borderRadius: 12, flexShrink: 0,
-                        background: step.bg, border: `1px solid ${step.border}`,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        color: step.color,
-                      }}>
-                        {step.icon}
-                      </div>
-                      <span style={{ fontSize: 13, fontWeight: 700, color: step.color, fontVariantNumeric: 'tabular-nums' }}>{step.number}</span>
+                <div
+                  key={i}
+                  className="bg-white rounded-2xl border border-[#E8E2DA] p-6 sm:p-7 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+                >
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+                      style={{ background: step.bg, border: `1px solid ${step.border}`, color: step.color }}>
+                      {step.icon}
                     </div>
-                    <h3 style={{ fontSize: 16, fontWeight: 700, color: '#0F0F0F', marginBottom: 8, lineHeight: 1.3 }}>{step.title}</h3>
-                    <p style={{ fontSize: 14, color: '#6B6560', lineHeight: 1.6 }}>{step.desc}</p>
+                    <span className="text-sm font-bold" style={{ color: step.color }}>{step.number}</span>
                   </div>
+                  <h3 className="text-[15px] font-bold text-[#0F0F0F] mb-2 leading-snug">{step.title}</h3>
+                  <p className="text-sm text-[#6B6560] leading-relaxed">{step.desc}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* ── Features ────────────────────────────────────────────────── */}
-        <section
-          id="features"
-          style={{ padding: '96px 24px', background: '#EDE8E2' }}
-        >
-          <div style={{ maxWidth: 1140, margin: '0 auto' }}>
+        {/* ── Features ──────────────────────────────────────────────────── */}
+        <section id="features" className="py-20 sm:py-24 px-4 sm:px-6" style={{ background: '#EDE8E2' }}>
+          <div className="max-w-6xl mx-auto">
             <SectionLabel>Features</SectionLabel>
-            <h2 style={{
-              textAlign: 'center', fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', fontWeight: 700,
-              letterSpacing: '-0.025em', color: '#0F0F0F', marginBottom: 12,
-            }}>
+            <h2 className="text-center font-bold tracking-tight text-[#0F0F0F] mb-3"
+              style={{ fontSize: 'clamp(1.6rem, 4vw, 2.5rem)' }}>
               Everything your support team needs
             </h2>
-            <p style={{ textAlign: 'center', color: '#6B6560', maxWidth: 480, margin: '0 auto 80px', fontSize: 16, lineHeight: 1.6 }}>
+            <p className="text-center text-[#6B6560] max-w-md mx-auto mb-16 text-[15px] leading-relaxed">
               Triage handles the routing so your agents can focus on what they do best — helping customers.
             </p>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 80 }}>
+            <div className="flex flex-col gap-16 sm:gap-20">
               {FEATURES.map((feat, i) => (
                 <div
                   key={i}
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-                    gap: 48,
-                    alignItems: 'center',
-                  }}
+                  className={`grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center`}
                 >
-                  {/* Text block */}
-                  <div style={{ order: feat.reverse ? 2 : 1 }}>
-                    <div style={{
-                      width: 44, height: 44, borderRadius: 12, marginBottom: 20,
-                      background: feat.iconBg, border: `1px solid ${feat.iconBg.replace('0.08', '0.25')}`,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      color: feat.iconColor,
-                    }}>
+                  {/* Text block — always first on mobile, alternates on desktop */}
+                  <div className={feat.reverse ? 'md:order-2' : 'md:order-1'}>
+                    <div
+                      className="w-11 h-11 rounded-xl flex items-center justify-center mb-5"
+                      style={{ background: feat.iconBg, border: `1px solid ${feat.iconBg.replace('0.08', '0.25')}`, color: feat.iconColor }}
+                    >
                       {feat.icon}
                     </div>
-                    <h3 style={{ fontSize: 22, fontWeight: 700, color: '#0F0F0F', marginBottom: 12, letterSpacing: '-0.02em' }}>
+                    <h3 className="text-[1.3rem] sm:text-[1.5rem] font-bold text-[#0F0F0F] mb-3 leading-snug tracking-tight">
                       {feat.title}
                     </h3>
-                    <p style={{ fontSize: 15, color: '#6B6560', lineHeight: 1.7, marginBottom: 20 }}>
+                    <p className="text-[15px] text-[#6B6560] leading-relaxed mb-5">
                       {feat.desc}
                     </p>
                     <a
                       href="#"
                       onClick={e => e.preventDefault()}
-                      style={{
-                        display: 'inline-flex', alignItems: 'center', gap: 6,
-                        fontSize: 14, fontWeight: 600, color: feat.iconColor,
-                        textDecoration: 'none', transition: 'gap 0.15s',
-                      }}
-                      onMouseEnter={e => e.currentTarget.style.gap = '10px'}
-                      onMouseLeave={e => e.currentTarget.style.gap = '6px'}
+                      className="inline-flex items-center gap-1.5 text-sm font-semibold transition-all hover:gap-3"
+                      style={{ color: feat.iconColor, textDecoration: 'none' }}
                     >
                       Learn more <ChevronRightIcon />
                     </a>
                   </div>
                   {/* Mockup */}
-                  <div style={{ order: feat.reverse ? 1 : 2 }}>
+                  <div className={feat.reverse ? 'md:order-1' : 'md:order-2'}>
                     {feat.mockup}
                   </div>
                 </div>
@@ -640,30 +537,24 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ── Pricing anchor (placeholder for anchor link) */}
+        {/* Pricing anchor */}
         <div id="pricing" />
 
-        {/* ── Bottom CTA ──────────────────────────────────────────────── */}
-        <section style={{ background: '#F7F3EE', padding: '96px 24px' }}>
-          <div style={{ maxWidth: 640, margin: '0 auto', textAlign: 'center' }}>
-            <h2 style={{
-              fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 800,
-              letterSpacing: '-0.03em', color: '#0F0F0F', marginBottom: 16, lineHeight: 1.15,
-            }}>
+        {/* ── Bottom CTA ────────────────────────────────────────────────── */}
+        <section className="py-20 sm:py-24 px-4 sm:px-6" style={{ background: '#F7F3EE' }}>
+          <div className="max-w-xl mx-auto text-center">
+            <h2 className="font-extrabold tracking-tight text-[#0F0F0F] mb-4 leading-tight"
+              style={{ fontSize: 'clamp(1.8rem, 5vw, 3rem)' }}>
               Start routing smarter today
             </h2>
-            <p style={{ fontSize: 17, color: '#6B6560', marginBottom: 40, lineHeight: 1.6 }}>
+            <p className="text-[#6B6560] mb-10 text-[17px] leading-relaxed">
               Set up in minutes. No credit card required.
             </p>
             <button
               id="cta-get-started"
               onClick={goRegister}
-              style={{
-                padding: '15px 36px', borderRadius: 10, fontSize: 16, fontWeight: 700,
-                color: '#fff', background: '#7C3AED', border: 'none', cursor: 'pointer',
-                boxShadow: '0 4px 24px rgba(124,58,237,0.35)',
-                transition: 'all 0.2s', display: 'inline-flex', alignItems: 'center', gap: 10,
-              }}
+              className="inline-flex items-center gap-2.5 px-9 py-4 rounded-xl text-[16px] font-bold text-white border-none cursor-pointer transition-all"
+              style={{ background: '#7C3AED', boxShadow: '0 4px 24px rgba(124,58,237,0.35)' }}
               onMouseEnter={e => { e.currentTarget.style.background = '#6D28D9'; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 36px rgba(124,58,237,0.5)'; }}
               onMouseLeave={e => { e.currentTarget.style.background = '#7C3AED'; e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 4px 24px rgba(124,58,237,0.35)'; }}
             >
@@ -673,32 +564,25 @@ export default function LandingPage() {
         </section>
       </main>
 
-      {/* ── Footer ──────────────────────────────────────────────────────── */}
-      <footer style={{ background: '#F7F3EE', borderTop: '1px solid #E8E2DA', padding: '48px 24px' }}>
-        <div style={{
-          maxWidth: 1140, margin: '0 auto',
-          display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap: 40, alignItems: 'start',
-        }}>
+      {/* ── Footer ────────────────────────────────────────────────────────── */}
+      <footer className="px-4 sm:px-6 py-12 border-t border-[#E8E2DA]" style={{ background: '#F7F3EE' }}>
+        <div className="max-w-6xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-8 items-start">
           {/* Brand */}
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+          <div className="col-span-2 sm:col-span-1">
+            <div className="flex items-center gap-2 mb-2">
               <LogoMark />
-              <span style={{ fontSize: '1rem', fontWeight: 700, color: '#0F0F0F' }}>Triage</span>
+              <span className="text-[1rem] font-bold text-[#0F0F0F]">Triage</span>
             </div>
-            <p style={{ fontSize: 13, color: '#6B6560', lineHeight: 1.6 }}>AI-powered support routing</p>
+            <p className="text-[13px] text-[#6B6560] leading-relaxed">AI-powered support routing</p>
           </div>
 
-          {/* Product links */}
+          {/* Product */}
           <div>
-            <p style={{ fontSize: 11, fontWeight: 700, color: '#0F0F0F', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 14 }}>Product</p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <p className="text-[11px] font-bold text-[#0F0F0F] tracking-widest uppercase mb-3">Product</p>
+            <div className="flex flex-col gap-2.5">
               {['How it works', 'Features'].map(label => (
-                <a key={label} href={`#${label.toLowerCase().replace(' ', '-')}`}
-                  style={{ fontSize: 14, color: '#6B6560', textDecoration: 'none', transition: 'color 0.15s' }}
-                  onMouseEnter={e => e.currentTarget.style.color = '#0F0F0F'}
-                  onMouseLeave={e => e.currentTarget.style.color = '#6B6560'}
-                >
+                <a key={label} href={`#${label.toLowerCase().replace(/\s+/g, '-')}`}
+                  className="text-sm text-[#6B6560] hover:text-[#0F0F0F] no-underline transition-colors">
                   {label}
                 </a>
               ))}
@@ -707,13 +591,10 @@ export default function LandingPage() {
 
           {/* Company */}
           <div>
-            <p style={{ fontSize: 11, fontWeight: 700, color: '#0F0F0F', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 14 }}>Company</p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <p className="text-[11px] font-bold text-[#0F0F0F] tracking-widest uppercase mb-3">Company</p>
+            <div className="flex flex-col gap-2.5">
               <a href="https://github.com/nisarg-gandhi/triage-app" target="_blank" rel="noopener noreferrer"
-                style={{ fontSize: 14, color: '#6B6560', textDecoration: 'none', transition: 'color 0.15s', display: 'flex', alignItems: 'center', gap: 6 }}
-                onMouseEnter={e => e.currentTarget.style.color = '#0F0F0F'}
-                onMouseLeave={e => e.currentTarget.style.color = '#6B6560'}
-              >
+                className="text-sm text-[#6B6560] hover:text-[#0F0F0F] no-underline transition-colors flex items-center gap-1.5">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                 </svg>
@@ -723,8 +604,8 @@ export default function LandingPage() {
           </div>
 
           {/* Copyright */}
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-end' }}>
-            <p style={{ fontSize: 13, color: '#9E9590' }}>© 2026 Triage</p>
+          <div className="flex sm:justify-end items-start">
+            <p className="text-[13px] text-[#9E9590]">© 2026 Triage</p>
           </div>
         </div>
       </footer>
